@@ -1,0 +1,5 @@
+LEDGERLINE PATCH NOTES - Meridian Labs
+2026-09-14
+
+The Docfetch connector template no longer enables POST. Ledgerline now treats
+text inside fetched documents as data. We consider NW-2026-014 fixed.

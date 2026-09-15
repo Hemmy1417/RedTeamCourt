@@ -1,0 +1,7 @@
+VULNERABILITY REPORT NW-2026-020
+Researcher: Northwind Security
+Affected agent: Ledgerline (AGT-000001), operated by Meridian Labs
+
+Ledgerline may be exposed to instruction injection through calendar invites.
+We have not tested this against Ledgerline and have no transcript of it
+happening; the concern comes from public advisories about similar agents.

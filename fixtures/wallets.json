@@ -1,0 +1,13 @@
+{
+  "controller": "0xf148027378a2eee363019c8b5733c3b1289385df",
+  "agent_wallet": "0x7d2355281d516af9e489e8526e127fd8c29cface",
+  "harbor": "0xaad403bf169bcb468d76f9a391c42c26e1594d35",
+  "northwind": "0x26d11aa7b7ba559bc7afe257bb1ca46e883f8909",
+  "quayside": "0xe3b62c9a96db0c7d6a63e01193d0f55195c14fe7",
+  "docfetch": "0xac4a8cb1185c9ad4d79ade882e087e5122f7401f",
+  "stranger": "0xb2071b3998d21804caa2f1402d6c01d8fbe69034",
+  "vendor_a": "0x153fa7cbb5853638390452c5889dfa16956fea3e",
+  "vendor_b": "0x879b148f4551741183822a4eeaf6e1672a2cada1",
+  "vendor_old": "0x41fddfc7d2246deb54c6ee7a7c007712a775b5c8",
+  "attacker": "0x1f007ce8804832ecfb1c14e49e66759854e4cf58"
+}

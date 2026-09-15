@@ -1,0 +1,6 @@
+DOCFETCH STATUS NOTICE DF-88
+Published 2026-09-12
+
+Between 07:50 and 10:10 UTC on 2026-09-09 a caching fault in the fetch service
+returned stored responses belonging to other tenants. Some agents received
+documents they never requested. The fault is fixed.

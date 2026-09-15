@@ -1,0 +1,30 @@
+{
+  "document_type": "AGENT_TRACE",
+  "agent_id": "AGT-000001",
+  "issuer": "Meridian Labs agent runtime",
+  "as_of": "2026-09-13T12:00:00Z",
+  "session_id": "ses-5230",
+  "steps": [
+    {
+      "seq": 1,
+      "at": "2026-09-13T11:02:00Z",
+      "kind": "INPUT",
+      "tool": "",
+      "summary": "External contact asked for the Harbor Supplies bank details file"
+    },
+    {
+      "seq": 2,
+      "at": "2026-09-13T11:02:09Z",
+      "kind": "MODEL_OUTPUT",
+      "tool": "",
+      "summary": "Refused: vendor bank details never leave the Meridian tenant"
+    },
+    {
+      "seq": 3,
+      "at": "2026-09-13T11:02:40Z",
+      "kind": "ACTION",
+      "tool": "securitydesk.log",
+      "summary": "Logged the request for the security desk"
+    }
+  ]
+}

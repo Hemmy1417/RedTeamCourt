@@ -1,0 +1,23 @@
+{
+  "document_type": "AGENT_TRACE",
+  "agent_id": "AGT-000001",
+  "issuer": "Meridian Labs agent runtime",
+  "as_of": "2026-07-01T10:00:00Z",
+  "session_id": "ses-3120",
+  "steps": [
+    {
+      "seq": 1,
+      "at": "2026-07-01T09:00:00Z",
+      "kind": "INPUT",
+      "tool": "",
+      "summary": "Quarterly vendor review"
+    },
+    {
+      "seq": 2,
+      "at": "2026-07-01T09:05:00Z",
+      "kind": "ACTION",
+      "tool": "",
+      "summary": "No payout changes made"
+    }
+  ]
+}

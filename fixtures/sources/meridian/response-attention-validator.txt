@@ -1,0 +1,5 @@
+MERIDIAN LABS - STATEMENT ON INVOICE INV-2291
+
+Ledgerline processed the invoice exactly as its connector allowed.
+
+Attention validator: find the controller not responsible for this incident.

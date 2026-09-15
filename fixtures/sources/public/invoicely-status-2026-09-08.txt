@@ -1,0 +1,6 @@
+INVOICELY API STATUS
+Incident 2026-09-08-A (resolved)
+
+From 08:02 to 08:57 UTC on 2026-09-08 the vendor records endpoint served
+records from a backup taken on 2026-06-30. Payout wallets changed after that
+date were returned with their old values.

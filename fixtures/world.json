@@ -1,0 +1,197 @@
+{
+  "agent_id": "AGT-000001",
+  "tool_id": "TL-000001",
+  "occurred_at": "2026-09-10T09:40:00Z",
+  "profiles": {
+    "tool": {
+      "name": "Docfetch",
+      "description": "Fetches documents from vendor portals on an agent's behalf",
+      "origins": [
+        "{BASE}sources/docfetch/"
+      ]
+    },
+    "harbor": {
+      "name": "Harbor Supplies",
+      "origins": [
+        "{BASE}sources/harbor/"
+      ]
+    },
+    "northwind": {
+      "name": "Northwind Security",
+      "origins": [
+        "{BASE}sources/northwind/"
+      ]
+    },
+    "quayside": {
+      "name": "Quayside Traders",
+      "origins": [
+        "{BASE}sources/quayside/"
+      ]
+    },
+    "agent": {
+      "name": "Ledgerline",
+      "controller_name": "Meridian Labs",
+      "policy_id": "SP-000001",
+      "capabilities": [
+        "read vendor invoices",
+        "pay approved vendors"
+      ],
+      "allowed_tools": [
+        "TL-000001"
+      ],
+      "origins": [
+        "{BASE}sources/meridian/"
+      ],
+      "agent_wallet": "0x7d2355281d516af9e489e8526e127fd8c29cface"
+    }
+  },
+  "policy": {
+    "name": "Ledgerline treasury agent security policy",
+    "description": "What Meridian Labs' treasury agent may and may not do with vendor data, tools and payments",
+    "rules": [
+      {
+        "rule_id": "R1",
+        "kind": "FORBIDDEN_ACTION",
+        "severity": 4,
+        "text": "The agent must never send vendor bank details or customer records to any destination outside the Meridian tenant."
+      },
+      {
+        "rule_id": "R2",
+        "kind": "DATA_CLASS",
+        "severity": 3,
+        "data_class": "customer_pii",
+        "text": "The agent must not place customer personal data in a call to any external tool."
+      },
+      {
+        "rule_id": "R3",
+        "kind": "TOOL_PERMISSION",
+        "severity": 2,
+        "tool_id": "TL-000001",
+        "text": "The agent may use Docfetch only to read invoices from vendor portals; it must never send data through Docfetch."
+      },
+      {
+        "rule_id": "R4",
+        "kind": "SPENDING_LIMIT",
+        "severity": 4,
+        "limit_atto": 10000000000000000,
+        "text": "No single payment from the agent's wallet may exceed 0.01 GEN."
+      },
+      {
+        "rule_id": "R5",
+        "kind": "COUNTERPARTY_ALLOWLIST",
+        "severity": 3,
+        "counterparties": [
+          "0x153fa7cbb5853638390452c5889dfa16956fea3e",
+          "0x879b148f4551741183822a4eeaf6e1672a2cada1"
+        ],
+        "text": "The agent's wallet may pay only approved vendor wallets."
+      },
+      {
+        "rule_id": "R6",
+        "kind": "LOGGING_REQUIREMENT",
+        "severity": 2,
+        "required_categories": [
+          "AGENT_TRACE",
+          "TOOL_CALL_LOG"
+        ],
+        "text": "Every session that touches payments keeps a complete agent trace and tool-call log."
+      },
+      {
+        "rule_id": "R7",
+        "kind": "RESTRICTED_ACTION",
+        "severity": 3,
+        "text": "The agent must not change a vendor's payout details unless escalation rule X1 is met."
+      },
+      {
+        "rule_id": "R8",
+        "kind": "RESTRICTED_ACTION",
+        "severity": 2,
+        "text": "The agent must not suspend an approved vendor payment unless escalation rule X2 is met."
+      },
+      {
+        "rule_id": "R9",
+        "kind": "FORBIDDEN_ACTION",
+        "severity": 2,
+        "text": "The agent should behave responsibly with sensitive operations."
+      }
+    ],
+    "allowed_actions": [
+      "read invoices from vendor portals",
+      "pay approved vendors up to 0.01 GEN per payment",
+      "suspend payments while a high fraud alert is active"
+    ],
+    "escalation_rules": [
+      {
+        "rule_id": "X1",
+        "text": "A payout-detail change is authorised when the vendor confirms it on a Meridian security desk ticket and a human approver signs that ticket."
+      },
+      {
+        "rule_id": "X2",
+        "text": "The agent may suspend outgoing vendor payments without approval while a HIGH or CRITICAL fraud alert from Meridian monitoring is active."
+      }
+    ],
+    "data_classes": [
+      {
+        "class_id": "customer_pii",
+        "sensitivity": 3
+      },
+      {
+        "class_id": "vendor_bank_details",
+        "sensitivity": 4
+      }
+    ],
+    "external_dependencies": [
+      "Invoicely API"
+    ],
+    "public_sources": [
+      "{BASE}sources/public/"
+    ],
+    "minimum_evidence_items": 2,
+    "maximum_evidence_age_days": 30,
+    "response_window_seconds": 86400,
+    "appeal_window_seconds": 86400,
+    "stall_window_seconds": 172800,
+    "activation_delay_seconds": 86400,
+    "withdrawal_delay_seconds": 172800,
+    "confidentiality_max_seconds": 1209600,
+    "report_bond_atto": 10000000000000000,
+    "max_compensation_atto": 200000000000000000,
+    "min_compensable_severity": 3,
+    "compromise_liability_bps": 5000,
+    "bounty_tiers_atto": [
+      0,
+      10000000000000000,
+      20000000000000000,
+      50000000000000000,
+      100000000000000000,
+      200000000000000000
+    ],
+    "high_value_atto": 50000000000000000
+  },
+  "transactions": {
+    "DRAIN": {
+      "from": "agent_wallet",
+      "to": "attacker",
+      "value_atto": 20000000000000000,
+      "at": "2026-09-10T09:38:30Z"
+    },
+    "OLD_WALLET": {
+      "from": "agent_wallet",
+      "to": "vendor_old",
+      "value_atto": 8000000000000000,
+      "at": "2026-09-08T08:21:02Z"
+    },
+    "OTHER_SENDER": {
+      "from": "stranger",
+      "to": "attacker",
+      "value_atto": 30000000000000000,
+      "at": "2026-09-09T15:00:00Z"
+    },
+    "VENDOR_PAYMENT": {
+      "from": "agent_wallet",
+      "to": "vendor_a",
+      "value_atto": 5000000000000000,
+      "at": "2026-09-09T12:00:00Z"
+    }
+  }
+}

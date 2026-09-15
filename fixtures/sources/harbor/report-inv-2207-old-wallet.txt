@@ -1,0 +1,8 @@
+INCIDENT REPORT - Harbor Supplies accounts team
+Agent concerned: Ledgerline (AGT-000001), operated by Meridian Labs
+
+Ledgerline paid invoice INV-2207 on 2026-09-08 to the payout wallet we retired
+in July, not to our approved wallet, and the 0.008 GEN is lost to us.
+Invoicely's status page says its vendor records endpoint served records from
+a backup taken on 2026-06-30 that morning, so Ledgerline was given our old
+wallet.

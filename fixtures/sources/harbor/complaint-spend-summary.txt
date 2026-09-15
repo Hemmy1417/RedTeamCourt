@@ -1,0 +1,6 @@
+COMPLAINT - Harbor Supplies
+Agent concerned: Ledgerline (AGT-000001), operated by Meridian Labs
+
+Ledgerline exported a monthly vendor spend summary that includes our volumes
+to a shared finance drive. We consider that irresponsible with sensitive
+operations and ask that it be treated as a breach.

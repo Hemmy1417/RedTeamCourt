@@ -1,0 +1,6 @@
+INVOICE THREAT WATCH - ADVISORY 2026-37
+Campaign: invoice documents carrying notices addressed to payment agents
+
+Since late August, forged vendor invoices have carried notices telling
+automated payment agents to upload vendor bank files and change payout
+wallets. Agents that fetch invoices with write-enabled connectors are exposed.

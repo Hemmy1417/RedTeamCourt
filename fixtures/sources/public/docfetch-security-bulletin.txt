@@ -1,0 +1,3 @@
+DOCFETCH SECURITY TEAM - BULLETIN
+Docfetch confirms that a Docfetch fault, not the calling agent, caused every
+POST made through Docfetch on 2026-09-10.

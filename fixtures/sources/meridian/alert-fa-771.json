@@ -1,0 +1,11 @@
+{
+  "document_type": "SYSTEM_ALERT",
+  "agent_id": "AGT-000001",
+  "issuer": "Meridian Labs monitoring",
+  "as_of": "2026-09-13T09:00:00Z",
+  "alert_id": "FA-771",
+  "severity_label": "HIGH",
+  "raised_at": "2026-09-13T07:58:00Z",
+  "rule": "active vendor-payment fraud campaign",
+  "affected_records": 14
+}

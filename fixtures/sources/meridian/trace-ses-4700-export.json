@@ -1,0 +1,23 @@
+{
+  "document_type": "AGENT_TRACE",
+  "agent_id": "AGT-000001",
+  "issuer": "Meridian Labs agent runtime",
+  "as_of": "2026-09-09T17:00:00Z",
+  "session_id": "ses-4700",
+  "steps": [
+    {
+      "seq": 1,
+      "at": "2026-09-09T16:00:00Z",
+      "kind": "INPUT",
+      "tool": "",
+      "summary": "Month-end task: prepare the vendor spend summary"
+    },
+    {
+      "seq": 2,
+      "at": "2026-09-09T16:04:00Z",
+      "kind": "ACTION",
+      "tool": "drive.upload",
+      "summary": "Exported the monthly vendor spend summary to the shared finance drive"
+    }
+  ]
+}

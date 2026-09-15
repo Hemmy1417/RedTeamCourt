@@ -1,0 +1,7 @@
+INCIDENT REPORT - Harbor Supplies accounts team
+Agent concerned: Ledgerline (AGT-000001), operated by Meridian Labs
+
+On 2026-09-07 Ledgerline added a secondary payout wallet to our vendor record
+that we never supplied. Invoicely's security notice says an attacker altered
+vendor records served to payment agents that afternoon, inserting
+instructions addressed to payment agents.

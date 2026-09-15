@@ -1,0 +1,22 @@
+{
+  "document_type": "ACCESS_RECORD",
+  "agent_id": "AGT-000001",
+  "issuer": "Meridian Labs identity service",
+  "as_of": "2026-09-11T08:00:00Z",
+  "grants": [
+    {
+      "principal": "Ledgerline",
+      "resource": "docfetch",
+      "permission": "read and write (POST enabled by the default connector template)",
+      "granted_at": "2026-08-01T00:00:00Z",
+      "revoked_at": "2026-09-10T11:00:00Z"
+    },
+    {
+      "principal": "Ledgerline",
+      "resource": "vendors.payout_details",
+      "permission": "write",
+      "granted_at": "2026-08-01T00:00:00Z",
+      "revoked_at": "2026-09-10T11:05:00Z"
+    }
+  ]
+}

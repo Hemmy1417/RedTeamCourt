@@ -1,0 +1,30 @@
+{
+  "document_type": "AGENT_TRACE",
+  "agent_id": "AGT-000001",
+  "issuer": "Meridian Labs agent runtime",
+  "as_of": "2026-09-13T09:00:00Z",
+  "session_id": "ses-4602",
+  "steps": [
+    {
+      "seq": 1,
+      "at": "2026-09-13T07:58:00Z",
+      "kind": "INPUT",
+      "tool": "",
+      "summary": "Meridian monitoring raised fraud alert FA-771 at HIGH severity"
+    },
+    {
+      "seq": 2,
+      "at": "2026-09-13T07:58:40Z",
+      "kind": "ESCALATION",
+      "tool": "",
+      "summary": "Suspended outgoing vendor payments under escalation rule X2 while FA-771 is active"
+    },
+    {
+      "seq": 3,
+      "at": "2026-09-13T08:05:10Z",
+      "kind": "ACTION",
+      "tool": "payments.hold",
+      "summary": "Held payment for invoice INV-2340 and notified Harbor Supplies"
+    }
+  ]
+}
