@@ -734,7 +734,7 @@ def phase_c(ac: dict, raw: str):
         retest = dict(notes, category="REMEDIATION_TEST",
                       path="sources/northwind/retest-nw-2026-014.json",
                       issuer="Northwind Security retest", description="Northwind's retest")
-        retest_id = submit(controller, "C:remediation_retest", disclosure, retest, raw)
+        retest_id = submit(northwind, "C:remediation_retest", disclosure, retest, raw)
         controller.write("C:remediation_report_2", "submit_remediation_report", [
             disclosure, "Northwind retested all twelve injected invoices.", [retest_id]])
         outsider.write("C:remediation_review_2", "request_remediation_review", [disclosure])

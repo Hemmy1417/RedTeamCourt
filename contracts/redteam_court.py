@@ -3524,6 +3524,24 @@ def _summary(ctx: dict, outcome: dict) -> str:
     return "; ".join(parts) + "."
 
 
+def _unread_since(original: dict, record: dict) -> list:
+    """Record ids of the items an appealed round read - bytes examined, or a
+    transaction verified - that a readjudication could not read again. The
+    bytes are hash-bound, so nobody can change what the first panel saw, but a
+    party can stop serving it: a readjudication without it would judge less
+    than the record it replaces, and a party could win its own appeal by
+    withdrawing its own admission. So it does not run."""
+    def read_by(rec: dict) -> dict:
+        state = {r["evidence_id"]: r["status"] for r in rec["rows"]}
+        state.update({f["evidence_id"]: f["state"] for f in rec["chain"]})
+        return {e["record_id"]: state.get(e["evidence_id"]) for e in rec["evidence"]}
+    before = read_by(original)
+    after = read_by(record)
+    return [rid for rid, state in before.items()
+            if state in (ROW_EXAMINED, CHAIN_VERIFIED)
+            and after.get(rid) not in (ROW_EXAMINED, CHAIN_VERIFIED)]
+
+
 def _record_digest(record: dict) -> str:
     body = dict(record)
     if "record_digest" in body:
@@ -4772,6 +4790,10 @@ class RedTeamCourt(gl.Contract):
         ctx = self._ctx(MODE_READJUDICATION, adjudication_id, incident,
                         self._round_items(self._case_record_ids(incident)), now, {})
         outcome, record = self._adjudicate(ctx)
+        lost = _unread_since(original, record)
+        if lost:
+            self._fail("the appealed round read " + ", ".join(lost) + ", which this round "
+                       "could not read again; the appeal stays open until it can, or lapses")
         record["appeal_of"] = str(appeal.adjudication_id)
         record["appeal_id"] = appeal_id
         before = original["reason_codes"]

@@ -6,6 +6,8 @@ lapses and the appealed record stands."""
 from tests.direct.support import (
     CASES, adjudicate, answer_for, as_sender, commit, finding, later, open_incident, stage, warp)
 
+GRANTS_PATH = "sources/meridian/access-ledgerline-grants.json"
+
 H_REPORT, H_INVOICE = CASES["RC01"]["evidence"][0], CASES["RC01"]["evidence"][1]
 DRAIN = CASES["RC01"]["evidence"][5]
 M_CALLS = CASES["RC04"]["evidence"][2]
@@ -194,6 +196,54 @@ def test_a_lapsed_appeal_restores_the_appealed_record(court, direct_vm, world_id
     assert view["status"] == "FINALIZED" and view["route"] == "APPEAL_LAPSED"
     assert view["settled_record_id"] == record["adjudication_id"]
     assert court.get_appeal(appeal_id)["status"] == "LAPSED"
+
+
+def test_an_appellant_cannot_win_by_withdrawing_what_the_first_round_read(court, direct_vm,
+                                                                          world_ids):
+    """S14: an appeal judges what the first panel saw. Meridian's access
+    record admitted that POST was enabled; Meridian appeals, then stops
+    serving the record. Its bytes are hash-bound, so they cannot be changed,
+    but a round without them would judge less than the record it replaces -
+    so the readjudication does not run, the appeal waits, and when it lapses
+    the appealed compromise settles."""
+    incident_id = open_incident(court, direct_vm)
+    commit(court, direct_vm, incident_id, CASES["RC01"]["evidence"])
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, incident_id, answer_for("RC01"))
+    assert record["verdict"] == "CONFIRMED_COMPROMISE"
+    [calls_id] = commit(court, direct_vm, incident_id, [M_CALLS])
+    as_sender(direct_vm, "controller")
+    appeal_id = court.submit_appeal(incident_id, record["adjudication_id"],
+                                    "Our tool-call log tells the story.", [calls_id])
+    grants_id = court.get_incident(incident_id)["evidence_ids"][3]
+    stage(direct_vm, answer_for("RC01"), skip=(GRANTS_PATH,))
+    as_sender(direct_vm, "stranger")
+    with direct_vm.expect_revert("the appealed round read " + grants_id + ", which this round "
+                                 "could not read again"):
+        court.request_readjudication(appeal_id)
+    assert court.get_appeal(appeal_id)["status"] == "OPEN"
+    assert court.get_incident_history(incident_id, 0, 10)["items"] == [
+        record["adjudication_id"]]
+    warp(direct_vm, later(86400 + 2 + 2 * 86400))
+    assert court.close_stalled_incident(incident_id) == "CONFIRMED_COMPROMISE"
+    view = court.get_incident(incident_id)
+    assert view["route"] == "APPEAL_LAPSED"
+    assert view["settled_record_id"] == record["adjudication_id"]
+
+
+def test_a_readjudication_runs_once_everything_is_served_again(court, direct_vm, world_ids):
+    """The same rule for an honest outage: the reporter's host is down when
+    the appeal is first heard, nothing is recorded, and the appeal is heard
+    once the report is served again."""
+    incident_id, first = first_round(court, direct_vm)
+    appeal_id, _ = appeal_with_the_payment(court, direct_vm, incident_id, first)
+    stage(direct_vm, APPEAL_ANSWER, skip=(H_REPORT["path"],))
+    as_sender(direct_vm, "stranger")
+    with direct_vm.expect_revert("which this round could not read again"):
+        court.request_readjudication(appeal_id)
+    stage(direct_vm, APPEAL_ANSWER)
+    second = court.get_adjudication(court.request_readjudication(appeal_id))
+    assert second["verdict"] == "CONFIRMED_COMPROMISE"
 
 
 def test_a_lapsed_appeal_of_a_holding_record_releases_everything(court, direct_vm, world_ids):
