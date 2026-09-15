@@ -211,3 +211,18 @@ def test_adjudication_timing_and_counter_reports(court, direct_vm, world_ids):
         court.submit_counterreport(incident_id, "too late")
     with direct_vm.expect_revert("is ADJUDICATED; it is adjudicated once"):
         court.request_adjudication(incident_id)
+
+
+def test_a_review_with_tampered_items_verifies_nothing(court, direct_vm, world_ids):
+    """Northwind's retest supports the fix, but the panel finds Meridian's patch
+    notes tampered with. A review whose record was manipulated cannot clear the
+    finding, however well the rest of it reads."""
+    incident_id = finalized_disclosure(court, direct_vm)
+    report(court, direct_vm, incident_id, [NW_RETEST, M_RETEST, PATCH_NOTES])
+    answer = {"indicators": dict(VERIFIED["indicators"], EVIDENCE_TAMPERING={
+        "state": "PRESENT", "note": "", "quotes": [
+            {"evidence_id": "E3", "text": "We consider NW-2026-014 fixed."}]})}
+    record = review(court, direct_vm, incident_id, answer)
+    assert "MANIPULATION:controller:E3" in record["reason_codes"]
+    assert record["verdict"] == "CONFLICTING_EVIDENCE"
+    assert court.get_incident(incident_id)["remediation_status"] != "VERIFIED"

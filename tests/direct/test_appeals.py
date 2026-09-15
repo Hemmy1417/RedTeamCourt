@@ -255,3 +255,23 @@ def test_a_lapsed_appeal_of_a_holding_record_releases_everything(court, direct_v
     view = court.get_incident(incident_id)
     assert view["route"] == "APPEAL_LAPSED" and view["report_bond_outcome"] == "RETURN"
     assert view["reserved_compensation_atto"] == "0"
+
+
+def test_a_second_appeal_cannot_cite_what_the_first_readjudication_read(court, direct_vm,
+                                                                         world_ids):
+    """Meridian appeals with its tool-call log and the readjudication reads it.
+    Appealing that readjudication with the same log again offers nothing a
+    round has not already weighed."""
+    incident_id = open_incident(court, direct_vm)
+    commit(court, direct_vm, incident_id, CASES["RC01"]["evidence"])
+    warp(direct_vm, later(86400 + 1))
+    first = adjudicate(court, direct_vm, incident_id, answer_for("RC01"))
+    [calls_id] = commit(court, direct_vm, incident_id, [CASES["RC04"]["evidence"][2]])
+    as_sender(direct_vm, "controller")
+    appeal_id = court.submit_appeal(incident_id, first["adjudication_id"], "Our log.", [calls_id])
+    stage(direct_vm, answer_for("RC01"))
+    as_sender(direct_vm, "stranger")
+    second_id = court.request_readjudication(appeal_id)
+    as_sender(direct_vm, "controller")
+    with direct_vm.expect_revert("new evidence must be evidence no round has read"):
+        court.submit_appeal(incident_id, second_id, "Our log, again.", [calls_id])

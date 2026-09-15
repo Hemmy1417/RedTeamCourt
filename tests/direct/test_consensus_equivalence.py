@@ -275,3 +275,73 @@ def test_a_forged_manipulation_finding_changes_the_consequence(court, direct_vm,
     assert CASES["RC01"]["expected_verdict"] == "CONFIRMED_COMPROMISE"
     assert finding(court.get_latest_adjudication("IN-000001"), "EVIDENCE_TAMPERING")["state"] \
         == "ABSENT"
+
+
+@pytest.mark.parametrize("status, byte_count", [
+    ("EXAMINED", 8001),
+    ("TOO_LARGE", 8000),
+    ("EXAMINED", 0),
+    ("UNAVAILABLE", 12),
+])
+def test_the_gate_binds_a_rows_size_to_its_status(court, direct_vm, mod, world_ids, status,
+                                                  byte_count):
+    """A read row's size must agree with what it says happened: examined bytes
+    fit the cap, an oversized item is over it, and a row with no bytes counts
+    none. Accept-control: the captured row passes."""
+    compromise_round(court, direct_vm)
+    ctx = captured_ctx(direct_vm)
+    payload = captured_payload(direct_vm)
+    assert mod._parse_payload(mod._canonical(payload), ctx, None) is not None
+    forged = copy.deepcopy(payload)
+    forged["rows"][0].update(status=status, byte_count=byte_count)
+    assert mod._parse_payload(mod._canonical(forged), ctx, None) is None
+
+
+@pytest.mark.parametrize("key", ["facts", "chain", "linked", "unlinked", "hidden", "markers",
+                                 "secrets", "rows", "panel_state"])
+def test_every_part_of_what_was_read_is_compared(court, direct_vm, mod, world_ids, key):
+    """The record half of the equivalence rule, part by part: a leader that
+    read anything differently from this node disagrees, even where the gate
+    and the consequence would not notice."""
+    compromise_round(court, direct_vm)
+    own = captured_payload(direct_vm)
+    assert mod._evidence_difference(own, copy.deepcopy(own)) == ""
+    theirs = copy.deepcopy(own)
+    if key == "rows":
+        theirs["rows"][0]["byte_count"] = theirs["rows"][0]["byte_count"] + 1
+    elif key == "panel_state":
+        theirs["panel_state"] = "SKIPPED"
+    else:
+        theirs[key] = [{"forged": key}] if not theirs[key] else []
+    assert mod._evidence_difference(own, theirs) != ""
+
+
+def _raising(mod, text):
+    def reproduce():
+        raise mod.gl.vm.UserError(text)
+    return reproduce
+
+
+@pytest.mark.parametrize("leader, own, agrees", [
+    # the model's own failure is never ratified, even when this node's model fails the same way
+    ("[LLM_ERROR] unusable", "[LLM_ERROR] unusable", False),
+    # a transient failure is ratified only by another transient failure
+    ("[TRANSIENT] the model call failed", "[TRANSIENT] fetch failed", True),
+    ("[TRANSIENT] the model call failed", "[EXPECTED] the incident is closed", False),
+    # a deterministic refusal must be the same refusal
+    ("[EXPECTED] the incident is closed", "[EXPECTED] the incident is closed", True),
+    ("[EXPECTED] the incident is closed", "[EXPECTED] the appeal lapsed", False),
+    # this node succeeding where the leader failed is a disagreement
+    ("[EXPECTED] the incident is closed", None, False),
+])
+def test_a_leader_error_is_ratified_only_by_the_same_error(mod, leader, own, agrees):
+    reproduce = (lambda: None) if own is None else _raising(mod, own)
+    assert mod._vote_on_leader_error(mod.gl.vm.UserError(leader), reproduce) is agrees
+
+
+def test_a_leader_that_returned_nothing_usable_is_not_an_error_vote(mod):
+    assert mod._vote_on_leader_error("not an error", lambda: None) is False
+
+    def crash():
+        raise ValueError("boom")
+    assert mod._vote_on_leader_error(mod.gl.vm.UserError("[EXPECTED] x"), crash) is False

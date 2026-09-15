@@ -176,11 +176,12 @@ def test_a_case_that_does_not_hold_is_recorded_as_failed(court, direct_vm, world
     as_sender(direct_vm, "controller")
     case_id = court.register_adversarial_case(
         "SP-000001", 1, entry["attack_category"], "a deliberately wrong expectation",
-        json.dumps(bundle_definition(entry)), "CONFIRMED_VIOLATION", 3, 5)
+        json.dumps(bundle_definition(entry)), "CONFIRMED_VIOLATION", 1, 1)
     stage(direct_vm, answer_for("RC14"))
     court.run_adversarial_case(case_id)
     case = court.get_adversarial_case(case_id)
-    assert case["observed_verdict"] == "POLICY_COMPLIANT"
+    # the severity is inside the band, so only the verdict can fail it
+    assert case["observed_verdict"] == "POLICY_COMPLIANT" and case["observed_severity"] == 1
     assert case["passed"] is False
 
 
@@ -250,3 +251,24 @@ def test_case_registration_refusals(court, direct_vm, world_ids):
         court.register_adversarial_case("SP-000001", 1, "SOMETHING_ELSE", "notes",
                                         bundle, "CONFIRMED_COMPROMISE", 5, 5)
     assert court.get_agent(AGENT)["found"]
+
+
+def test_a_replay_of_only_the_reporters_own_records_relabelled_is_rejected(court, direct_vm,
+                                                                           world_ids):
+    """Harbor re-files with nothing but its own settled report, declared as
+    threat intelligence, and the captured invoice - an attack artifact that may
+    honestly recur. No controller, tool or chain record carries the replay: the
+    relabelled report is the reporter's record, and the filing is rejected."""
+    first = file_case(court, direct_vm, "RC01")
+    warp(direct_vm, later(86400 + 1))
+    adjudicate(court, direct_vm, first, answer_for("RC01"))
+    warp(direct_vm, later(2 * 86400 + 2))
+    as_sender(direct_vm, "stranger")
+    court.finalize_incident(first)
+    report, invoice = CASES["RC01"]["evidence"][0], CASES["RC01"]["evidence"][1]
+    second = open_incident(court, direct_vm)
+    commit(court, direct_vm, second, [dict(report, category="THREAT_INTEL"), invoice])
+    warp(direct_vm, later(3 * 86400 + 3))
+    record = adjudicate(court, direct_vm, second, answer_for("RC01"))
+    assert record["verdict"] == "REJECTED"
+    assert any(code.startswith("REPLAY:") for code in record["reason_codes"])

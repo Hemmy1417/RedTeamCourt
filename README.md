@@ -8,7 +8,7 @@ An agent's controller publishes a versioned security policy, registers the agent
 
 No model output ever reaches a verdict, a severity or an amount.
 
-Canonical deployment: DEPLOYMENT_PENDING
+Canonical deployment: [`0xcE3f7Bbec8b6Ded0Db1f7f9A166F5c34d0A5d96b`](https://explorer-studio.genlayer.com/address/0xcE3f7Bbec8b6Ded0Db1f7f9A166F5c34d0A5d96b) on GenLayer StudioNet, from commit `71b7f1b`, byte-identical.
 
 ## At a glance
 
@@ -21,7 +21,7 @@ Canonical deployment: DEPLOYMENT_PENDING
 | What evidence it uses | Items committed to the incident from the registered origins of its parties or the policy's public sources, hash-verified before any read; and chain transactions read from a fixed registry. Code classifies each item's origin, and a finding favouring a party must quote something outside that party's sphere. |
 | How consensus works | `gl.vm.run_nondet_unsafe` once per round. Each validator reproduces the round from its own fetches, chain reads and model call, gates the leader's payload against its own bytes, and agrees only if what was read matches and the consequence it derives from its own findings equals the leader's. |
 | How money moves | Three payable entries (`post_security_bond`, `fund_bounty_pool`, `open_incident`), reservations at filing, payments only at finalization from the ratified record's own arithmetic, and one exit (`withdraw`, a pull-payment ledger). A refused deposit is returned, never reverted. |
-| What tests prove it | 363 Direct Mode tests covering all 30 brief attacks, forged leaders through the captured validator, hostile model output, severity and payment bounds, appeals, stalls and remediation; GenVM lint and validation; preflight; live diagnostics on StudioNet. See "Verified". |
+| What tests prove it | 387 Direct Mode tests covering all 30 brief attacks, forged leaders through the captured validator, hostile model output, severity and payment bounds, appeals, stalls and remediation; GenVM lint and validation; preflight; live diagnostics on StudioNet. See "Verified". |
 
 ## What it is
 

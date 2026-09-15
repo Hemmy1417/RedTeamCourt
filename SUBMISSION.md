@@ -11,13 +11,13 @@ agreed findings into a verdict, a severity, responsibility, remediation and paym
 
 **Repository** - https://github.com/Hemmy1417/RedTeamCourt
 
-**Canonical StudioNet address** - ADDRESS_PENDING
+**Canonical StudioNet address** - `0xcE3f7Bbec8b6Ded0Db1f7f9A166F5c34d0A5d96b`
 
-**Explorer URL** - EXPLORER_PENDING
+**Explorer URL** - https://explorer-studio.genlayer.com/address/0xcE3f7Bbec8b6Ded0Db1f7f9A166F5c34d0A5d96b
 
-**Deployment tx** - DEPLOY_TX_PENDING
+**Deployment tx** - `0x8f082898b497bad9162874c222f5ff3af15b14078197f724984bfd9697863ea6`
 
-**Deployment source** - SOURCE_PENDING
+**Deployment source** - commit `71b7f1b`, https://github.com/Hemmy1417/RedTeamCourt/blob/71b7f1b3501a44be1f0c033ea79a2a37d0d9b393/contracts/redteam_court.py (byte-identical on chain)
 
 ## Why GenLayer is required
 

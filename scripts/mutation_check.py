@@ -17,7 +17,8 @@ the bottom of this file with the reason.
 Run:  python scripts/mutation_check.py             (full sweep)
       python scripts/mutation_check.py --anchors   (anchor check only)
       python scripts/mutation_check.py --only gate (only mutations whose name
-                                                    contains "gate")
+                                                    contains "gate"; separate
+                                                    several with "|")
       python scripts/mutation_check.py --jobs 3    (three scratch copies at
                                                     once; default 1)
 """
@@ -619,7 +620,7 @@ def main() -> None:
         jobs = max(1, int(sys.argv[sys.argv.index("--jobs") + 1]))
 
     todo = [m for m in MUTATIONS
-            if source.count(m[1]) == 1 and (not only or only in m[0].casefold())]
+            if source.count(m[1]) == 1 and (not only or any(part in m[0].casefold() for part in only.split("|")))]
     jobs = min(jobs, max(1, len(todo)))
 
     scratch = pathlib.Path(tempfile.mkdtemp(prefix="redteam-mut-"))

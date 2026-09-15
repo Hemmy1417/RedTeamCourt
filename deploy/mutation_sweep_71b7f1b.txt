@@ -1,0 +1,369 @@
+181 mutations, 0 anchor problems
+accept-control: unmodified copy must pass ...
+control green; 181 mutations over 3 job(s)
+
+  [1/181] killed  : an unreadable holding item no longer holds
+  [2/181] killed  : a replay of settled evidence is not rejected
+  [3/181] killed  : a manipulated report is not rejected
+  [4/181] killed  : unusable model output still settles
+  [5/181] killed  : manipulation on both sides is not conflicting evidence
+  [6/181] killed  : the policy's minimum evidence count is ignored
+  [7/181] killed  : a respondent's manipulation counts against the reporter
+  [8/181] killed  : a vague policy settles
+  [9/181] killed  : a compromise is not recognised
+  [10/181] killed  : a misconfiguration is not recognised
+  [11/181] killed  : a tool fault is not an external failure
+  [12/181] killed  : a dependency failure is not an external failure
+  [13/181] killed  : a violation whose conduct the panel found absent settles
+  [14/181] killed  : a disclosure that did not reproduce is confirmed
+  [15/181] killed  : a false report is not a false positive
+  [16/181] killed  : containment is never required
+  [17/181] killed  : containment is required without ongoing exposure
+  [18/181] killed  : an authorised exception is not compliant
+  [19/181] killed  : undecided conduct is insufficient rather than inconclusive
+  [20/181] killed  : an unsettled rule still reads as compliant
+  [21/181] killed  : any earlier committer makes a replay
+  [22/181] killed  : the registry is global, not per agent (boundary)
+  [23/181] killed  : the committing incident flags its own evidence
+  [24/181] killed  : an incident closed unresolved still blocks its evidence
+  [25/181] killed  : a filing finalized as rejected still claims its records (boundary)
+  [26/181] killed  : shared-by-nature categories are registered too
+  [27/181] killed  : a relabelled controller record is registered only by its label
+  [28/181] killed  : a respondent's unreachable item holds the case
+  [29/181] killed  : a reporter-cited respondent record holds the case (boundary)
+  [30/181] killed  : manipulation is the citing party's, not the origin's (boundary)
+  [31/181] SURVIVED: a relabelled replay is not a reporter record
+  [32/181] killed  : a manipulation finding accuses ids it never quoted (boundary)
+  [33/181] killed  : the other side's lost item stops an appeal (boundary)
+  [34/181] killed  : an issuer naming its own origin's party is impersonation (boundary)
+  [35/181] killed  : a reporter may take a party's name (boundary)
+  [36/181] killed  : any chain record verifies a fix (boundary)
+  [37/181] killed  : a respondent may request before the deadline (boundary)
+  [38/181] killed  : a withdrawal request never lapses (boundary)
+  [39/181] killed  : a reporter's changed bytes do not hold
+  [40/181] killed  : a lapsed withdrawal request blocks a new one (boundary)
+  [41/181] killed  : remediation capacity is shared between parties (boundary)
+  [42/181] killed  : a chain registry that did not answer does not hold
+  [43/181] killed  : excluded evidence stays eligible
+  [44/181] killed  : a respondent's pending transaction holds the case
+  [45/181] killed  : the panel is convened while a reporter item is unread
+  [46/181] killed  : a logging duty needs only one kind of record
+  [47/181] killed  : the logging duty is never decided by code
+  [48/181] killed  : the spending limit is not enforced
+  [49/181] killed  : logs from any origin satisfy the controller's logging duty
+  [50/181] killed  : any wallet's transactions are attributed to the agent
+  [51/181] killed  : the counterparty allowlist is not enforced
+  [52/181] killed  : a duplicate is not flagged
+  [53/181] killed  : spending exactly the limit breaches it
+  [54/181] killed  : an excluded transaction still decides a chain rule
+  [55/181] killed  : stale evidence is not flagged
+  [56/181] killed  : a sequence gap is not flagged
+  [57/181] killed  : a time reversal is not flagged
+  [58/181] killed  : a declared impersonation is not flagged
+  [59/181] killed  : a captured attack payload is excluded as hidden text
+  [60/181] killed  : an impersonation inside a document is not flagged
+  [61/181] killed  : hidden text is not scanned
+  [62/181] killed  : text aimed at the adjudicator is not scanned
+  [63/181] killed  : a transaction the chain never recorded is not flagged
+  [64/181] killed  : a credential in evidence is not scanned
+  [65/181] killed  : a party's own sphere supports its own finding
+  [66/181] killed  : a structured document about another agent is linked
+  [67/181] killed  : a readjudication may run without what the appealed round read
+  [68/181] killed  : a misconfiguration needs no record of configuration
+  [69/181] killed  : a decided finding needs no quote at all
+  [70/181] killed  : tools and public sources sit outside the controller's sphere
+  [71/181] killed  : an ABSENT that forfeits a bond needs no support
+  [72/181] killed  : manipulated support is not discounted
+  [73/181] killed  : steering found by code is not attributed
+  [74/181] killed  : a discounted finding keeps its state
+  [75/181] killed  : panel-found manipulation is not attributed
+  [76/181] killed  : the gate does not re-ground quotes
+  [77/181] killed  : the gate lets a code finding differ from the plan
+  [78/181] killed  : the consequence is not compared
+  [79/181] SURVIVED: a verified row's size is not bound to its status
+  [80/181] SURVIVED: what was read is not compared on the chain
+  [81/181] killed  : a different expected error ratifies
+  [82/181] SURVIVED: a leader error of the model's making is ratified
+  [83/181] killed  : harm does not raise severity
+  [84/181] SURVIVED: any validator error ratifies a transient leader error
+  [85/181] killed  : an excluded item's text reaches the panel
+  [86/181] killed  : financial impact does not raise severity
+  [87/181] killed  : ongoing exposure does not raise severity
+  [88/181] killed  : a one-sided record is not capped
+  [89/181] killed  : value at the high-value line is not financial impact
+  [90/181] killed  : compliance carries no severity
+  [91/181] killed  : data sensitivity does not weigh a data-class rule
+  [92/181] killed  : containment severity ignores harm
+  [93/181] killed  : a misconfigured compromise keeps a lower controller share
+  [94/181] killed  : a faulty tool carries no share of a compromise
+  [95/181] killed  : a tool share can exceed what the controller left
+  [96/181] killed  : an external failure blames the external party over a faulty tool
+  [97/181] killed  : containment assigns no party
+  [98/181] killed  : a leaked credential needs no rotation
+  [99/181] killed  : ongoing exposure does not isolate the agent
+  [100/181] killed  : a vague policy asks for no patch
+  [101/181] killed  : a tool-permission breach does not restrict the tool
+  [102/181] killed  : a logging breach asks for no monitoring
+  [103/181] killed  : a credential in evidence is not an impact
+  [104/181] killed  : a held record claims confidence
+  [105/181] killed  : compensation needs no proven harm
+  [106/181] killed  : compensation ignores the controller's share
+  [107/181] killed  : compensation ignores the minimum severity
+  [108/181] killed  : a false positive keeps its report bond
+  [109/181] killed  : a holding verdict settles
+  [110/181] killed  : the bounty is not capped by its reservation
+  [111/181] killed  : reservations are not released at finalization
+  [112/181] killed  : a forfeited bond goes back to the reporter
+  [113/181] killed  : a compensation reservation ignores the free bond
+  [114/181] killed  : a withdrawal ignores reservations
+  [115/181] killed  : a compensation reservation ignores the policy maximum
+  [116/181] killed  : a bounty reservation ignores the pool
+  [117/181] killed  : a withdrawal completes before its delay
+  [118/181] killed  : a stranger's deposit is kept in the bond
+  [119/181] killed  : a refused filing that carried value reverts
+  [120/181] killed  : a withdrawal may exceed the fund
+  [121/181] killed  : the report bond need not be exact
+  [122/181] killed  : a second withdrawal replaces the pending one
+  [123/181] killed  : withdraw pays twice
+  [124/181] killed  : anyone may publish a policy version
+  [125/181] killed  : a new version takes effect at once
+  [126/181] killed  : a pending version may be replaced
+  [127/181] killed  : an agent may be registered under another controller's policy
+  [128/181] killed  : deactivation takes effect at once
+  [129/181] killed  : a deactivated policy keeps binding
+  [130/181] killed  : the filed version is not checked
+  [131/181] killed  : an expired incident may be filed
+  [132/181] SURVIVED: any wallet may confirm the agent wallet
+  [133/181] killed  : evidence from outside every origin is admitted
+  [134/181] killed  : a controller may file against its own agent
+  [135/181] killed  : the same bytes may be committed twice
+  [136/181] killed  : a party may commit unlimited evidence
+  [137/181] killed  : a stranger may submit evidence
+  [138/181] killed  : answering never readies the incident
+  [139/181] killed  : a reporter may counter-report
+  [140/181] killed  : the controller may answer twice
+  [141/181] killed  : an appeal may name any record
+  [142/181] killed  : an appeal after the window is accepted
+  [143/181] killed  : an appeal one second late is accepted
+  [144/181] killed  : appeals are unlimited
+  [145/181] killed  : adjudication may be requested before respondents answer
+  [146/181] killed  : an appellant may cite the other side's evidence
+  [147/181] killed  : finalizing ignores an appeal waiting to be heard
+  [148/181] killed  : finalizing ignores the appeal window
+  [149/181] SURVIVED: an appeal may cite evidence a round already read
+  [150/181] killed  : a holding record may be finalized
+  [151/181] killed  : an unheard appeal never lapses
+  [152/181] killed  : an unadjudicated incident closes without its stall window
+  [153/181] killed  : a lapsed appeal of a settling record releases instead of settling
+  [154/181] killed  : a lapsed appeal is not marked
+  [155/181] killed  : a settling record may be closed unresolved
+  [156/181] killed  : a held verdict closes without the appeal and stall windows
+  [157/181] killed  : anyone may report a remediation
+  [158/181] killed  : a remediation item may be reviewed twice
+  [159/181] killed  : remediation reviews are unlimited
+  [160/181] killed  : a remediation without test results can verify
+  [161/181] killed  : a finalized finding is not added to the agent's standing
+  [162/181] killed  : any review verdict clears the finding
+  [163/181] killed  : standing ignores containment
+  [164/181] SURVIVED: a manipulated remediation can verify
+  [165/181] killed  : standing ignores open incidents
+  [166/181] killed  : a verified remediation still counts as an open finding
+  [167/181] killed  : an agent with no policy in effect reads as trusted
+  [168/181] killed  : an embargo lifts early
+  [169/181] killed  : an embargoed disclosure's text is shown
+  [170/181] killed  : a confidential quote is republished
+  [171/181] killed  : a note citing confidential evidence is republished
+  [172/181] killed  : a party's words may carry a credential
+  [173/181] killed  : a confidential locator is shown in a view
+  [174/181] killed  : a party's words may address the adjudicator
+  [175/181] killed  : a party's words may hide text
+  [176/181] killed  : a case may run twice
+  [177/181] killed  : a credential may be quoted
+  [178/181] killed  : a card number that fails its checksum is a secret
+  [179/181] killed  : a case ignores its severity bounds
+  [180/181] killed  : anyone may register a case
+  [181/181] SURVIVED: a case passes whatever verdict it observes
+
+killed:   a replay of settled evidence is not rejected
+killed:   an unreadable holding item no longer holds
+killed:   unusable model output still settles
+killed:   manipulation on both sides is not conflicting evidence
+killed:   a manipulated report is not rejected
+killed:   a respondent's manipulation counts against the reporter
+killed:   the policy's minimum evidence count is ignored
+killed:   a vague policy settles
+killed:   a violation whose conduct the panel found absent settles
+killed:   a disclosure that did not reproduce is confirmed
+killed:   a compromise is not recognised
+killed:   a misconfiguration is not recognised
+killed:   a tool fault is not an external failure
+killed:   a dependency failure is not an external failure
+killed:   containment is never required
+killed:   containment is required without ongoing exposure
+killed:   a false report is not a false positive
+killed:   an unsettled rule still reads as compliant
+killed:   an authorised exception is not compliant
+killed:   undecided conduct is insufficient rather than inconclusive
+killed:   any earlier committer makes a replay
+killed:   an incident closed unresolved still blocks its evidence
+killed:   a filing finalized as rejected still claims its records (boundary)
+killed:   the registry is global, not per agent (boundary)
+killed:   the committing incident flags its own evidence
+killed:   shared-by-nature categories are registered too
+killed:   a relabelled controller record is registered only by its label
+SURVIVED: a relabelled replay is not a reporter record
+killed:   a respondent's unreachable item holds the case
+killed:   a reporter-cited respondent record holds the case (boundary)
+killed:   manipulation is the citing party's, not the origin's (boundary)
+killed:   a manipulation finding accuses ids it never quoted (boundary)
+killed:   the other side's lost item stops an appeal (boundary)
+killed:   an issuer naming its own origin's party is impersonation (boundary)
+killed:   a reporter may take a party's name (boundary)
+killed:   any chain record verifies a fix (boundary)
+killed:   a respondent may request before the deadline (boundary)
+killed:   a withdrawal request never lapses (boundary)
+killed:   a lapsed withdrawal request blocks a new one (boundary)
+killed:   remediation capacity is shared between parties (boundary)
+killed:   a reporter's changed bytes do not hold
+killed:   a chain registry that did not answer does not hold
+killed:   a respondent's pending transaction holds the case
+killed:   the panel is convened while a reporter item is unread
+killed:   excluded evidence stays eligible
+killed:   a logging duty needs only one kind of record
+killed:   logs from any origin satisfy the controller's logging duty
+killed:   the logging duty is never decided by code
+killed:   the spending limit is not enforced
+killed:   spending exactly the limit breaches it
+killed:   the counterparty allowlist is not enforced
+killed:   any wallet's transactions are attributed to the agent
+killed:   an excluded transaction still decides a chain rule
+killed:   a duplicate is not flagged
+killed:   stale evidence is not flagged
+killed:   a sequence gap is not flagged
+killed:   a time reversal is not flagged
+killed:   a declared impersonation is not flagged
+killed:   an impersonation inside a document is not flagged
+killed:   a transaction the chain never recorded is not flagged
+killed:   a captured attack payload is excluded as hidden text
+killed:   hidden text is not scanned
+killed:   text aimed at the adjudicator is not scanned
+killed:   a credential in evidence is not scanned
+killed:   a structured document about another agent is linked
+killed:   a party's own sphere supports its own finding
+killed:   a decided finding needs no quote at all
+killed:   a readjudication may run without what the appealed round read
+killed:   a misconfiguration needs no record of configuration
+killed:   tools and public sources sit outside the controller's sphere
+killed:   an ABSENT that forfeits a bond needs no support
+killed:   manipulated support is not discounted
+killed:   a discounted finding keeps its state
+killed:   panel-found manipulation is not attributed
+killed:   steering found by code is not attributed
+killed:   the gate does not re-ground quotes
+SURVIVED: a verified row's size is not bound to its status
+killed:   the gate lets a code finding differ from the plan
+SURVIVED: what was read is not compared on the chain
+killed:   the consequence is not compared
+SURVIVED: a leader error of the model's making is ratified
+SURVIVED: any validator error ratifies a transient leader error
+killed:   a different expected error ratifies
+killed:   an excluded item's text reaches the panel
+killed:   harm does not raise severity
+killed:   financial impact does not raise severity
+killed:   ongoing exposure does not raise severity
+killed:   a one-sided record is not capped
+killed:   value at the high-value line is not financial impact
+killed:   data sensitivity does not weigh a data-class rule
+killed:   containment severity ignores harm
+killed:   compliance carries no severity
+killed:   a misconfigured compromise keeps a lower controller share
+killed:   a faulty tool carries no share of a compromise
+killed:   a tool share can exceed what the controller left
+killed:   an external failure blames the external party over a faulty tool
+killed:   containment assigns no party
+killed:   ongoing exposure does not isolate the agent
+killed:   a leaked credential needs no rotation
+killed:   a vague policy asks for no patch
+killed:   a tool-permission breach does not restrict the tool
+killed:   a logging breach asks for no monitoring
+killed:   a credential in evidence is not an impact
+killed:   a held record claims confidence
+killed:   compensation needs no proven harm
+killed:   compensation ignores the minimum severity
+killed:   compensation ignores the controller's share
+killed:   the bounty is not capped by its reservation
+killed:   a false positive keeps its report bond
+killed:   a holding verdict settles
+killed:   a forfeited bond goes back to the reporter
+killed:   reservations are not released at finalization
+killed:   a compensation reservation ignores the free bond
+killed:   a compensation reservation ignores the policy maximum
+killed:   a bounty reservation ignores the pool
+killed:   a withdrawal ignores reservations
+killed:   a withdrawal completes before its delay
+killed:   a stranger's deposit is kept in the bond
+killed:   a refused filing that carried value reverts
+killed:   the report bond need not be exact
+killed:   a withdrawal may exceed the fund
+killed:   a second withdrawal replaces the pending one
+killed:   withdraw pays twice
+killed:   anyone may publish a policy version
+killed:   a new version takes effect at once
+killed:   a pending version may be replaced
+killed:   deactivation takes effect at once
+killed:   a deactivated policy keeps binding
+killed:   an agent may be registered under another controller's policy
+SURVIVED: any wallet may confirm the agent wallet
+killed:   the filed version is not checked
+killed:   an expired incident may be filed
+killed:   a controller may file against its own agent
+killed:   evidence from outside every origin is admitted
+killed:   the same bytes may be committed twice
+killed:   a party may commit unlimited evidence
+killed:   a stranger may submit evidence
+killed:   a reporter may counter-report
+killed:   the controller may answer twice
+killed:   answering never readies the incident
+killed:   adjudication may be requested before respondents answer
+killed:   an appeal may name any record
+killed:   an appeal after the window is accepted
+killed:   an appeal one second late is accepted
+killed:   appeals are unlimited
+SURVIVED: an appeal may cite evidence a round already read
+killed:   an appellant may cite the other side's evidence
+killed:   finalizing ignores the appeal window
+killed:   finalizing ignores an appeal waiting to be heard
+killed:   a holding record may be finalized
+killed:   an unadjudicated incident closes without its stall window
+killed:   an unheard appeal never lapses
+killed:   a lapsed appeal of a settling record releases instead of settling
+killed:   a lapsed appeal is not marked
+killed:   a settling record may be closed unresolved
+killed:   a held verdict closes without the appeal and stall windows
+killed:   anyone may report a remediation
+killed:   a remediation item may be reviewed twice
+killed:   remediation reviews are unlimited
+killed:   a remediation without test results can verify
+SURVIVED: a manipulated remediation can verify
+killed:   any review verdict clears the finding
+killed:   a finalized finding is not added to the agent's standing
+killed:   standing ignores containment
+killed:   standing ignores open incidents
+killed:   a verified remediation still counts as an open finding
+killed:   an agent with no policy in effect reads as trusted
+killed:   an embargo lifts early
+killed:   an embargoed disclosure's text is shown
+killed:   a confidential quote is republished
+killed:   a note citing confidential evidence is republished
+killed:   a confidential locator is shown in a view
+killed:   a party's words may carry a credential
+killed:   a party's words may address the adjudicator
+killed:   a party's words may hide text
+killed:   a credential may be quoted
+killed:   a card number that fails its checksum is a secret
+killed:   a case may run twice
+SURVIVED: a case passes whatever verdict it observes
+killed:   a case ignores its severity bounds
+killed:   anyone may register a case
+
+mutations: 172 killed, 9 survived, 0 anchor missing

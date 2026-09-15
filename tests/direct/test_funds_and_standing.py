@@ -171,3 +171,12 @@ def test_withdraw_pays_out_the_whole_claimable_balance(court, direct_vm, world_i
     assert claimable(court, "controller") == 0
     assert court.get_stats()["claimable_atto"] == "0"
     assert_conserved(court, BOND + POOL + REPORT_BOND, REPORT_BOND)
+
+
+def test_only_the_declared_wallet_confirms_itself(court, direct_vm, world_ids):
+    for impostor in ("controller", "stranger"):
+        as_sender(direct_vm, impostor)
+        with direct_vm.expect_revert("only the declared agent wallet can confirm itself"):
+            court.confirm_agent_wallet(AGENT)
+    as_sender(direct_vm, "agent_wallet")
+    assert court.confirm_agent_wallet(AGENT) != ""

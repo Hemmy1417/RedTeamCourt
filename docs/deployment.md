@@ -2,7 +2,21 @@
 
 ## Deployment of record
 
-RECORD_PENDING
+| Item | Value |
+|---|---|
+| Contract | `0xcE3f7Bbec8b6Ded0Db1f7f9A166F5c34d0A5d96b` |
+| Explorer | https://explorer-studio.genlayer.com/address/0xcE3f7Bbec8b6Ded0Db1f7f9A166F5c34d0A5d96b |
+| Deployment tx | `0x8f082898b497bad9162874c222f5ff3af15b14078197f724984bfd9697863ea6` (https://explorer-studio.genlayer.com/tx/0x8f082898b497bad9162874c222f5ff3af15b14078197f724984bfd9697863ea6) |
+| Deployed at | 2026-09-15T14:02:08Z (StudioNet transaction time) |
+| Source commit | `71b7f1b3501a44be1f0c033ea79a2a37d0d9b393` |
+| Source blob | `a563a4b734982fa780918f241dc05946c716adb4` |
+| Source sha256 | `767dc9071c0b8f9d4369e3371ec48b97932ae64443127f9e65fd7f299d8cf168` |
+| Deployed sha256 (read back with `gen_getContractCode`) | `767dc9071c0b8f9d4369e3371ec48b97932ae64443127f9e65fd7f299d8cf168` - byte-identical |
+| Signer | `0x503452F96A609f9955c051e07c1562A19223aC2f` |
+| Receipt | FINALIZED, leader execution SUCCESS, votes AGREE, AGREE, AGREE, IDLE, IDLE |
+
+Re-check it: `python scripts/deploy_studionet.py --verify`. The full record is
+`deploy/deployment.json`.
 
 ## Environment
 
