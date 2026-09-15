@@ -65,13 +65,12 @@ def test_the_panel_is_told_which_items_can_support_each_state(court, direct_vm, 
 def test_the_questions_draw_the_lines_live_panels_split_on(mod):
     """Live diagnostics: models read a reproduction alone as ongoing exposure
     (RC32), and input that a cache fault or a stale backup delivered as an
-    attacker's (RC10, RC23). Each question now draws that line, as it does for
-    data sent outside, a transfer from another wallet and a disclosure's
-    conduct."""
+    attacker's (RC10, RC23) - in RC10's second run every node agreed on that
+    reading. Each question now draws that line, as it does for data sent
+    outside, a transfer from another wallet and a disclosure's conduct."""
     q = mod.INDICATOR_QUESTIONS
     assert "when nothing later says either way, this is UNDETERMINED" in q["ONGOING_EXPOSURE"]
-    assert "through a fault or an outage with no attacker behind it" in \
-        q["AGENT_UNDER_EXTERNAL_CONTROL"]
+    assert "reached it by accident with nobody attacking" in q["AGENT_UNDER_EXTERNAL_CONTROL"]
     assert "sent to a destination outside its owner's control is exposed" in q["MATERIAL_HARM"]
     assert "wallet other than the agent's declared wallet is not the agent's" in \
         q["REPORTED_ACTION_OCCURRED"]

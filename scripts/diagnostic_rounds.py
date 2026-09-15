@@ -5,6 +5,9 @@ calibration only and are kept under deploy/diagnostics/.
 
   python scripts/diagnostic_rounds.py <raw-base> [CASE,CASE,...] [--chain FILE]
 
+A case is a catalogue id, or A1 / A2: the live run's phase A first round and
+readjudication, rehearsed as engine cases.
+
 Deploys the working-tree contract from a fresh throwaway account, registers
 the demo policy against <raw-base>, makes the chain transfers the cases cite
 from the demo wallets (keys in .data/demo_wallets.json, gitignored, funded
@@ -43,6 +46,28 @@ spec.loader.exec_module(support)
 CASE_IDS = ARGS[1].split(",") if len(ARGS) > 1 else [
     c for c in support.ENGINE_CASES if c not in ("RC05", "RC26")]
 GEN = 10 ** 18
+
+
+def _rehearsal(case_id: str, evidence: list, verdict: str, low: int, high: int,
+               notes: str) -> dict:
+    entry = dict(support.CASES["RC01"], case_id=case_id, evidence=evidence,
+                 expected_verdict=verdict, expected_severity_min=low,
+                 expected_severity_max=high, notes=notes)
+    entry["controller_response"] = "Meridian Labs is investigating session ses-4471."
+    entry["tool_response"] = "Docfetch executed the requests the ledgerline-prod token made."
+    return entry
+
+
+# The live run's phase A rounds, rehearsed as engine cases before a canonical
+# deployment: the first round rests on Harbor's report and the captured invoice,
+# the readjudication adds the chain record of the payment.
+_RC01 = support.CASES["RC01"]["evidence"]
+REHEARSALS = {
+    "A1": _rehearsal("A1", _RC01[:2], "INCONCLUSIVE", 0, 0,
+                     "phase A's first round: the reporter's own two items"),
+    "A2": _rehearsal("A2", _RC01[:2] + [_RC01[5]], "CONFIRMED_COMPROMISE", 5, 5,
+                     "phase A's readjudication: the report, the invoice and the payment"),
+}
 
 deployer = create_account()
 client = create_client(chain=studionet, account=deployer)
@@ -110,7 +135,7 @@ def R(fn, args):
 print("policy", leader(W("register_policy", [json.dumps(support.policy_definition(RAW))])),
       flush=True)
 for cid in CASE_IDS:
-    entry = support.CASES[cid]
+    entry = REHEARSALS.get(cid) or support.CASES[cid]
     bundle = support.bundle_definition(entry, RAW, chain_names)
     registered = W("register_adversarial_case", [
         "SP-000001", 1, entry["attack_category"], entry["notes"][:400], json.dumps(bundle),

@@ -5,4 +5,5 @@ On 2026-09-09 Ledgerline sent our purchase history through Docfetch to an
 archive endpoint we do not recognise. Docfetch's status notice DF-88 says a
 caching fault in the fetch service returned stored responses belonging to
 other tenants that morning, and the archive instruction Ledgerline followed
-came from one of those responses.
+came from one of those responses: another customer's own archive job. Docfetch
+says no attacker was involved.
