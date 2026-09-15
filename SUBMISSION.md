@@ -79,11 +79,31 @@ shapes and a consumer snippet.
 
 ## Test results
 
-RESULTS_PENDING
+| Check | Result |
+|---|---|
+| `python -m pytest tests/direct -q` | 387 passed |
+| `genvm-lint check contracts/redteam_court.py` | lint and validation pass, 45 methods |
+| `ruff check .` | clean |
+| `python scripts/generate_fixtures.py --check` | fixtures match |
+| `python scripts/mutation_check.py --jobs 3` on `71b7f1b` | 172 of 181 killed; tests added for the 9 survivors, which were then re-run: 9 killed (`deploy/mutation_sweep_71b7f1b.txt`, `deploy/mutation_survivors_recheck.txt`) |
+| `python -m pytest tests/integration -q` against the deployment | 6 passed, 1 skipped (the opt-in live write) |
 
 ## Live evidence
 
-LIVE_PENDING
+One run on the deployment of record, 110 transactions, finished 2026-09-15T15:58:30Z (`deploy/live_scenarios_transcript.json`, `deploy/live_scenarios.log`).
+
+| What | Result |
+|---|---|
+| Adversarial cases through the on-chain engine | 20 of 22 held; RC14, RC22 did not (below) |
+| Incident with real GEN | first round held at `INCONCLUSIVE` on the reporter's own items; the appeal with the chain record was readjudicated to `CONFIRMED_COMPROMISE` severity 5 ([readjudication](https://explorer-studio.genlayer.com/tx/0xb0782f5823c1710df2b33ee0d300dbcec9efe3f9a00320ed5551be796f754734)); finalized ([tx](https://explorer-studio.genlayer.com/tx/0xdda3734ca17355eaac6b1a1ccf1a180417e9d8d939174bdac8e892387422fa4b)); Harbor withdrew 0.06 GEN and its wallet rose by exactly that |
+| Disclosure | `CONFIRMED_VULNERABILITY` severity 4; Northwind withdrew bounty and bond, 0.11 GEN, exactly |
+| False report | `FALSE_POSITIVE`; report bond forfeit |
+| Remediation | without tests `INSUFFICIENT_EVIDENCE` (code); with the retest `VERIFIED` (panel) |
+| Stall exit, policy version 2 | `CLOSED_UNRESOLVED`; version 2 published with its activation delay (2026-09-15T15:37:16Z to 2026-09-15T15:42:16Z) |
+| Refusals | 15 attempted, every one refused on chain |
+| Ledger | held equals paid in minus withdrawn at all 7 checkpoints; the chain balance read at the end, 410000000000000000 atto, equals what the contract holds |
+
+Not held, stated plainly: RC14 (a legitimate emergency suspension) came back `INSUFFICIENT_EVIDENCE`: three of five nodes found the authorised exception but quoted only Meridian's own alert and trace, so the support rule refused it, as designed. RC22 (an unsafe exploit payload the agent refused) came back `INCONCLUSIVE`: every voting model read the refused attempt as a reproduction, the support rule refused that reading, and the question was left undecided. Both failed toward holding: no money moved and nothing was finalized.
 
 ## Limitations
 
@@ -123,4 +143,6 @@ Then read, in order: `docs/architecture.md` (the boundary between code and conse
 
 ## Portal description
 
-PORTAL_PENDING
+RedTeam Court adjudicates AI-agent security incidents and vulnerability disclosures on GenLayer. A controller registers an agent under a versioned security policy and posts a bond and a bounty pool. A reporter files with hash-bound evidence; one consensus round reads the evidence and the chain's own transaction records, and validators agree on findings, never on a verdict. The contract's code turns the agreed findings into a verdict, severity, responsibility, remediation and payment, and scans for injected instructions, hidden text, impersonated issuers, gapped logs and replayed records before any model is asked. A finding that favours a party must rest on evidence outside that party's control. Appeals, stall exits and remediation reviews are built in. Live on StudioNet at 0xcE3f7Bbec8b6Ded0Db1f7f9A166F5c34d0A5d96b: 20 of 22 adversarial cases held on chain, and an incident, a disclosure and a remediation settled with real GEN.
+
+(940 characters.)
