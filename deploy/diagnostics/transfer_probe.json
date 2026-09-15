@@ -1,0 +1,21 @@
+{
+  "probed_at": "2026-09-15T05:05:07Z",
+  "sender": "0x3f3f72702e214dacc2d407b5c7107a9ab02508bc",
+  "recipient": "0x18e7446787df981223fb2c8b0bea73c89311b563",
+  "value_atto": 10000000000000000,
+  "tx": "0x43cd638455d2f15470389112dcb03f9b392aba8fe2031ff249de6a63c7162af5",
+  "receipt_status": "FINALIZED",
+  "chain_record": {
+    "hash": "0x43cd638455d2f15470389112dcb03f9b392aba8fe2031ff249de6a63c7162af5",
+    "type": 0,
+    "status": "FINALIZED",
+    "from_address": "0x3F3F72702E214dACC2D407B5C7107a9aB02508Bc",
+    "to_address": "0x18E7446787df981223Fb2C8B0BEA73c89311B563",
+    "value": 10000000000000000,
+    "value_credited": true,
+    "created_timestamp": "1789448691",
+    "result_name": "NO_MAJORITY"
+  },
+  "recipient_balance_before": "0",
+  "recipient_balance_after": "10000000000000000"
+}

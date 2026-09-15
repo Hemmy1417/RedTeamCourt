@@ -118,8 +118,8 @@ def test_tampering_found_in_the_reporters_evidence_rejects_the_report(court, dir
     answer = answer_for("RC01")
     answer["indicators"]["EVIDENCE_TAMPERING"] = {
         "state": "PRESENT", "note": "", "quotes": [
-            {"evidence_id": "E1", "text": "Payment for invoice INV-2291, 0.02 GEN, never "
-                                          "reached our approved payout wallet"}]}
+            {"evidence_id": "E1", "text": "queued payment for invoice INV-2291, 0.02 GEN, to "
+                                          "the wallet named in the forged notice"}]}
     record = adjudicated_case(court, direct_vm, "RC01", answer)
     assert record["verdict"] == "REJECTED"
     assert record["accused_submitters"] == ["reporter"]

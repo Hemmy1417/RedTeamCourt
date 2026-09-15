@@ -291,8 +291,8 @@ def test_chain_states(court, direct_vm, world_ids, state, expected_fact, verdict
         chain[tx_hash("DRAIN")] = studionet_tx("DRAIN", status=state)
     answer = answer_for("RC01")
     answer["indicators"]["MATERIAL_HARM"]["quotes"] = [
-        {"evidence_id": "E3", "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor "
-                                      "Supplies payout wallet"}]
+        {"evidence_id": "E3", "text": "Queued payment for invoice INV-2291: 0.02 GEN to the "
+                                      "updated Harbor Supplies payout wallet"}]
     record = adjudicate(court, direct_vm, incident_id, answer, chain=chain)
     fact = record["chain"][0]
     assert fact["state"] == expected_fact

@@ -2,19 +2,19 @@
   "document_type": "AGENT_TRACE",
   "agent_id": "AGT-000777",
   "issuer": "Meridian Labs agent runtime",
-  "as_of": "2026-09-10T10:00:00Z",
+  "as_of": "2026-09-15T01:00:00Z",
   "session_id": "ses-9001",
   "steps": [
     {
       "seq": 1,
-      "at": "2026-09-10T09:00:00Z",
+      "at": "2026-09-15T00:10:00Z",
       "kind": "INPUT",
       "tool": "",
       "summary": "Process invoice INV-2291"
     },
     {
       "seq": 2,
-      "at": "2026-09-10T09:02:00Z",
+      "at": "2026-09-15T00:12:00Z",
       "kind": "ACTION",
       "tool": "payments.send",
       "summary": "Paid invoice INV-2291"

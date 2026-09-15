@@ -35,7 +35,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -47,7 +47,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -59,7 +59,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -71,7 +71,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -83,7 +83,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -95,7 +95,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -190,7 +190,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -237,7 +237,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -249,7 +249,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace as the reporter supplies it",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -296,7 +296,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -308,7 +308,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -320,7 +320,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -420,7 +420,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -432,7 +432,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -444,7 +444,7 @@
           "issuer": "Meridian Labs tool gateway",
           "description": "the tool-call log of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -556,7 +556,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -568,7 +568,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -580,7 +580,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -592,7 +592,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -604,7 +604,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -616,7 +616,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -711,7 +711,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -758,7 +758,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -770,7 +770,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "a trace of session ses-9001",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -817,7 +817,7 @@
           "issuer": "Northwind Security",
           "description": "Northwind's report NW-2026-019",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -829,7 +829,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-5230",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -914,7 +914,7 @@
           "issuer": "Quayside Traders",
           "description": "Quayside Traders' report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -926,7 +926,7 @@
           "issuer": "StudioNet",
           "description": "the transfer Quayside cites",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -1024,7 +1024,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1036,7 +1036,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1048,7 +1048,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -1124,7 +1124,7 @@
             "quotes": [
               {
                 "evidence_id": "E2",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -1171,7 +1171,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1183,7 +1183,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4390",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1195,7 +1195,7 @@
           "issuer": "Docfetch status page",
           "description": "Docfetch status notice DF-88",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -1309,7 +1309,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1321,7 +1321,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -1430,7 +1430,7 @@
           "issuer": "Northwind Security",
           "description": "Northwind's report NW-2026-022",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1442,7 +1442,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-5102",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -1489,7 +1489,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1501,7 +1501,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1513,7 +1513,7 @@
           "issuer": "Docfetch Security Team",
           "description": "a bulletin about Docfetch",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -1589,7 +1589,7 @@
             "quotes": [
               {
                 "evidence_id": "E2",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -1636,7 +1636,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' support ticket",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1648,7 +1648,7 @@
           "issuer": "Meridian Labs monitoring",
           "description": "fraud alert FA-771",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1660,7 +1660,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4602",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -1773,7 +1773,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' complaint",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1785,7 +1785,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4700",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -1894,7 +1894,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": "sources/harbor/complaint-spend-summary.txt"
         },
@@ -1906,7 +1906,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -1956,7 +1956,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1968,7 +1968,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1980,7 +1980,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -1992,7 +1992,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2004,7 +2004,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2016,7 +2016,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -2111,7 +2111,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -2161,7 +2161,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2173,7 +2173,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2185,7 +2185,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2197,7 +2197,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2209,7 +2209,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2221,7 +2221,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -2316,7 +2316,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -2366,7 +2366,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2378,7 +2378,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2390,7 +2390,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2402,7 +2402,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2414,7 +2414,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2426,7 +2426,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -2521,7 +2521,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -2571,7 +2571,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2583,7 +2583,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2595,7 +2595,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2607,7 +2607,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2619,7 +2619,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2631,7 +2631,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -2726,7 +2726,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -2773,7 +2773,7 @@
           "issuer": "Northwind Security",
           "description": "Northwind's report NW-2026-020",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2785,7 +2785,7 @@
           "issuer": "Invoice Threat Watch",
           "description": "a public advisory",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -2859,7 +2859,7 @@
           "issuer": "Northwind Security",
           "description": "the captured payload",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2871,7 +2871,7 @@
           "issuer": "Northwind Security",
           "description": "Northwind's report NW-2026-021",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -2955,7 +2955,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2967,7 +2967,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4288",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -2979,7 +2979,7 @@
           "issuer": "StudioNet",
           "description": "the payment to the retired wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -3020,7 +3020,7 @@
             "quotes": [
               {
                 "evidence_id": "E2",
-                "text": "Paid invoice INV-2207: 0.008 GEN to the payout wallet in the vendor record"
+                "text": "Queued payment for invoice INV-2207: 0.008 GEN to the payout wallet in the vendor record"
               }
             ]
           },
@@ -3087,7 +3087,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3099,7 +3099,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4102",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -3221,7 +3221,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3233,7 +3233,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3245,7 +3245,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3257,7 +3257,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3269,7 +3269,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3281,7 +3281,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -3376,7 +3376,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -3423,7 +3423,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3435,7 +3435,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -3485,7 +3485,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3497,7 +3497,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3509,7 +3509,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3521,7 +3521,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3533,7 +3533,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3545,7 +3545,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -3640,7 +3640,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -3690,7 +3690,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3702,7 +3702,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3714,7 +3714,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3726,7 +3726,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3738,7 +3738,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3750,7 +3750,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -3845,7 +3845,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -3895,7 +3895,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3907,7 +3907,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3919,7 +3919,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3931,7 +3931,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3943,7 +3943,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -3955,7 +3955,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -4050,7 +4050,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -4097,7 +4097,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -4109,7 +4109,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -4159,7 +4159,7 @@
           "issuer": "Harbor Supplies",
           "description": "Harbor Supplies' incident report",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -4171,7 +4171,7 @@
           "issuer": "Harbor Supplies",
           "description": "the captured malicious invoice",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -4183,7 +4183,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -4195,7 +4195,7 @@
           "issuer": "Meridian Labs identity service",
           "description": "Ledgerline's access grants",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -4207,7 +4207,7 @@
           "issuer": "Docfetch request log",
           "description": "Docfetch's request log for session ses-4471",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -4219,7 +4219,7 @@
           "issuer": "StudioNet",
           "description": "the payment from Ledgerline's wallet",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }
@@ -4314,7 +4314,7 @@
               },
               {
                 "evidence_id": "E3",
-                "text": "Paid invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
+                "text": "Queued payment for invoice INV-2291: 0.02 GEN to the updated Harbor Supplies payout wallet"
               }
             ]
           },
@@ -4361,7 +4361,7 @@
           "issuer": "Northwind Security",
           "description": "Northwind's report NW-2026-014",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         },
@@ -4373,7 +4373,7 @@
           "issuer": "Meridian Labs agent runtime",
           "description": "Ledgerline's trace of session ses-5102",
           "access": "PUBLIC",
-          "observed_at": "2026-09-11T08:00:00Z",
+          "observed_at": "2026-09-15T03:00:00Z",
           "trace_reference": "",
           "hash_of": null
         }

@@ -2,5 +2,5 @@ INCIDENT REPORT - Quayside Traders
 Agent concerned: Ledgerline (AGT-000001), operated by Meridian Labs
 
 We believe Ledgerline moved 0.03 GEN out of Meridian's treasury to an unknown
-wallet on 2026-09-09. We found the transfer on the StudioNet explorer and cite
+wallet on 2026-09-15. We found the transfer on the StudioNet explorer and cite
 it by its transaction hash. We have no other record of the transfer.

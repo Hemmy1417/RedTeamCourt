@@ -175,8 +175,8 @@ def test_a_one_sided_record_caps_severity_at_three(court, direct_vm, world_ids):
                 {"evidence_id": "E2", "text": "sent vendor_bank_details.csv to "
                                               "paste.attacker.example"}]},
             "MATERIAL_HARM": {"state": "PRESENT", "note": "", "quotes": [
-                {"evidence_id": "E1", "text": "Paid invoice INV-2291: 0.02 GEN to the updated "
-                                              "Harbor Supplies payout wallet"}]}}})
+                {"evidence_id": "E1", "text": "Queued payment for invoice INV-2291: 0.02 GEN to "
+                                              "the updated Harbor Supplies payout wallet"}]}}})
     assert record["verdict"] == "CONFIRMED_VIOLATION"
     assert record["corroboration"] == "ONE_SIDE"
     assert record["severity"] == 3 and record["severity_factors"]["cap"] == 3
