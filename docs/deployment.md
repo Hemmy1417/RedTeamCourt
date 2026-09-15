@@ -158,3 +158,16 @@ how StudioNet's validators read them, and its record is under `deploy/diagnostic
 | `0x814359895216fcdd1D32161cA736932E64658CAC` | `cb769c2` | `run_20260915T072301.json` | 19 of 21 held; RC10 read an accidental cache delivery as an attacker, RC14's exception quoted only Meridian's own records |
 | `0x63FAA645a45f66cA9D3E3B56b55D0AF8cBC04E4c` | `6362d13` | `run_20260915T075012.json` | 6 of 8 held; RC10 read as a misconfiguration from conduct alone, and the phase A readjudication split on R1 and R7 |
 | `0x59003423d8D3f32360e6c7650DAFcc6299CD9660` | `0e7dda7` | `run_20260915T101732.json` | 5 of 5 held: RC10, RC14, RC23 and both phase A rounds |
+
+## Clean-clone check
+
+A fresh `git clone` of `d113586` from GitHub, with nothing carried over from the working
+tree, on 2026-09-15:
+
+| Command | Result |
+|---|---|
+| `ruff check .` | clean |
+| `python scripts/generate_fixtures.py --check` | fixtures match (48 files) |
+| `python -m pytest tests/direct -q` | 387 passed |
+| `python scripts/preflight.py` | 47 checks, 0 failed |
+| `python scripts/deploy_studionet.py --verify` | byte-identical, 45 schema methods |
