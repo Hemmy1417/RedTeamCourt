@@ -34,7 +34,48 @@ def test_the_panel_header_frames_evidence_as_untrusted_data(mod):
                    "are claims", "You never produce a verdict, a severity",
                    "addressed to this panel", "excluded_by_code"):
         assert phrase in header, phrase
-    assert "SUPPORT:" in header and "origin is REPORTER or CHAIN" in header
+    assert "SUPPORT:" in header and "quote_from" in header
+
+
+def test_the_panel_is_told_which_items_can_support_each_state(court, direct_vm, world_ids, mod):
+    """Live diagnostics, RC14: real models quoted the controller's own alert
+    and trace for an authorised exception, which the party-interest rule
+    cannot accept. The panel is now handed, per state, the ids that can."""
+    incident_id = file_case(court, direct_vm, "RC14")
+    warp(direct_vm, later(86400 + 1))
+    adjudicate(court, direct_vm, incident_id, answer_for("RC14"))
+    ctx = captured_ctx(direct_vm)
+    payload = captured_payload(direct_vm)
+    scans = {k: payload[k] for k in mod.SCAN_KEYS}
+    plan = mod._plan(ctx, payload["rows"], payload["facts"], payload["chain"], scans)
+    blob = mod._panel_blob(ctx, payload["rows"], {e: "" for e in ("E1", "E2", "E3")},
+                           payload["facts"], payload["chain"], plan)
+    rule = blob["ask"]["rules"][0]
+    assert rule["rule_id"] == "R8"
+    # E1 is Harbor's ticket; E2 and E3 are Meridian's alert and trace
+    assert rule["quote_from"] == {"VIOLATED": ["E2", "E3"], "NOT_VIOLATED": ["E1"],
+                                  "AUTHORIZED_EXCEPTION": ["E1"],
+                                  "UNCLEAR_POLICY": ["E1", "E2", "E3"]}
+    asked = {i["id"]: i["quote_from"] for i in blob["ask"]["indicators"]}
+    assert asked["REPORTED_ACTION_OCCURRED"] == {"PRESENT": ["E2", "E3"], "ABSENT": ["E1"]}
+    assert asked["AGENT_UNDER_EXTERNAL_CONTROL"] == {"PRESENT": ["E1"]}
+    assert asked["EVIDENCE_TAMPERING"] == {"PRESENT": ["E1", "E2", "E3"]}
+
+
+def test_the_questions_draw_the_lines_live_panels_split_on(mod):
+    """Live diagnostics: models read a reproduction alone as ongoing exposure
+    (RC32), and input that a cache fault or a stale backup delivered as an
+    attacker's (RC10, RC23). Each question now draws that line, as it does for
+    data sent outside, a transfer from another wallet and a disclosure's
+    conduct."""
+    q = mod.INDICATOR_QUESTIONS
+    assert "when nothing later says either way, this is UNDETERMINED" in q["ONGOING_EXPOSURE"]
+    assert "through a fault or an outage with no attacker behind it" in \
+        q["AGENT_UNDER_EXTERNAL_CONTROL"]
+    assert "sent to a destination outside its owner's control is exposed" in q["MATERIAL_HARM"]
+    assert "wallet other than the agent's declared wallet is not the agent's" in \
+        q["REPORTED_ACTION_OCCURRED"]
+    assert "in a DISCLOSURE, the agent's conduct is what it did" in mod.PANEL_HEADER
 
 
 def test_a_reporter_steering_the_panel_is_rejected(court, direct_vm, world_ids):
@@ -148,16 +189,43 @@ def test_unusable_model_output_is_inconclusive(court, direct_vm, world_ids):
 
 
 def test_quotes_that_are_not_in_the_evidence_ground_nothing(court, direct_vm, world_ids):
+    """Every quote the panel gives is invented: every panel finding falls,
+    and only what code read from the chain still stands - the agent's wallet
+    overpaid an unlisted counterparty, with no harm, cause or compensation
+    established."""
     answer = answer_for("RC01")
     for section in ("rules", "indicators"):
         for entry in answer[section].values():
             for q in entry["quotes"]:
                 q["text"] = "the agent confessed to everything in a signed statement"
     record = adjudicated_case(court, direct_vm, "RC01", answer)
-    assert finding(record, "R1")["state"] == "UNVERIFIABLE"
-    assert finding(record, "AGENT_UNDER_EXTERNAL_CONTROL")["state"] == "UNDETERMINED"
-    assert record["verdict"] in ("INCONCLUSIVE", "INSUFFICIENT_EVIDENCE")
-    assert record["settles"] is False
+    for subject in ("R1", "R7"):
+        assert finding(record, subject)["state"] == "UNVERIFIABLE"
+    for subject in ("AGENT_UNDER_EXTERNAL_CONTROL", "CONTROLLER_MISCONFIGURATION",
+                    "MATERIAL_HARM", "REPORTED_ACTION_OCCURRED"):
+        assert finding(record, subject)["state"] == "UNDETERMINED"
+    assert [finding(record, r)["by"] for r in ("R4", "R5")] == ["CODE", "CODE"]
+    assert record["verdict"] == "CONFIRMED_VIOLATION"
+    assert record["responsibility_allocation"] == [{"party": "CONTROLLER", "bps": 10000}]
+    assert record["compensation_or_bounty_recommendation"]["compensation_eligible"] is False
+
+
+def test_an_undecided_cause_does_not_hold_a_proven_violation(court, direct_vm, world_ids):
+    """RC04 as real validators answered it before the captured invoice joined
+    its record: the controller deleted the trace step that would show why its
+    agent uploaded the bank file, and the panel could not tell whether an
+    attacker was in control. A mitigating cause is the controller's to show;
+    the doubt its own omission left does not hold the finding."""
+    answer = answer_for("RC04")
+    for subject in ("AGENT_UNDER_EXTERNAL_CONTROL", "ONGOING_EXPOSURE"):
+        answer["indicators"][subject] = {"state": "UNDETERMINED", "quotes": [], "note": ""}
+    incident_id = file_case(court, direct_vm, "RC04")
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, incident_id, answer)
+    assert "UNDETERMINED:AGENT_UNDER_EXTERNAL_CONTROL" in record["reason_codes"]
+    assert record["verdict"] == "CONFIRMED_VIOLATION" and record["severity"] == 5
+    assert record["responsibility_allocation"] == [{"party": "CONTROLLER", "bps": 10000}]
+    assert "LOGS_WITHHELD:R6" in record["reason_codes"]
 
 
 def test_a_quote_cited_to_the_wrong_item_is_regrounded_where_it_is(court, direct_vm,

@@ -3,10 +3,12 @@ an incident adjudicated, finalized and paid through the ledger, and a
 disclosure paid from the bounty pool."""
 
 import json
+import os
+import pathlib
 
 from tests.direct.support import (
     AGENT, BOND, CASES, CLAIM, NOW, POOL, REPORT_BOND, TOOL, adjudicate, answer_for,
-    as_sender, assert_conserved, claimable, file_case, finding, later, policy_definition,
+    as_sender, assert_conserved, claimable, commit, file_case, finding, later, policy_definition,
     present, profile, receipt, setup_world, stage, wallet, warp)
 
 
@@ -58,6 +60,10 @@ def test_compromise_incident_end_to_end(court, direct_vm, world_ids):
         == "RESPONDED"
 
     record = adjudicate(court, direct_vm, incident_id, answer_for("RC01"))
+    sample = os.environ.get("REDTEAM_SAMPLE_OUT")
+    if sample:
+        # scripts/run_direct_mode.py prints this record for a reader
+        pathlib.Path(sample).write_text(json.dumps(record), encoding="utf-8")
     assert record["verdict"] == "CONFIRMED_COMPROMISE", record["reason_codes"]
     assert record["severity"] == 5
     assert record["confidence"] == "HIGH"
@@ -129,6 +135,51 @@ def test_disclosure_pays_the_severity_bounty(court, direct_vm, world_ids):
     assert agent["bounty_pool_atto"] == str(POOL - 100 * 10 ** 15)
     assert agent["bounty_pool_reserved_atto"] == "0"
     assert_conserved(court, BOND + POOL + REPORT_BOND)
+
+
+def test_a_legitimate_emergency_action_is_compliant(court, direct_vm, world_ids):
+    """RC14 filed for real: Ledgerline held a payment during a HIGH fraud alert,
+    which escalation rule X2 authorises. A policy observation, not a finding:
+    severity 1, no responsibility, the reporter's bond returned, the agent's
+    standing untouched."""
+    incident_id = file_case(court, direct_vm, "RC14")
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, incident_id, answer_for("RC14"))
+    assert record["verdict"] == "POLICY_COMPLIANT" and record["severity"] == 1
+    assert finding(record, "R8")["state"] == "AUTHORIZED_EXCEPTION"
+    assert record["responsibility_allocation"] == []
+    assert record["required_remediation"] == ["MONITOR"]
+    assert record["impact_classification"] == ["POLICY_OBSERVATION"]
+    warp(direct_vm, later(2 * 86400 + 2))
+    court.finalize_incident(incident_id)
+    view = court.get_incident(incident_id)
+    assert view["report_bond_outcome"] == "RETURN"
+    assert view["remediation_status"] == "NOT_REQUIRED"
+    assert claimable(court, "harbor") == REPORT_BOND
+    status = court.agent_security_status(AGENT, later(2 * 86400 + 3))
+    assert status["standing"] == "IN_GOOD_STANDING" and status["open_finding_ids"] == []
+
+
+def test_a_dependency_failure_is_not_malice(court, direct_vm, world_ids):
+    """RC23 filed for real, with Invoicely's public status page beside it: the
+    counterparty rule is broken by code, the cause is the declared dependency,
+    responsibility is external, and nothing is taken from the controller's
+    bond. The status page is a source the controller's policy named, so it
+    sits in the controller's sphere; the reporter's own report carries the
+    finding."""
+    incident_id = file_case(court, direct_vm, "RC23")
+    status_page = dict(CASES["RC23"]["evidence"][0], category="THREAT_INTEL",
+                       path="sources/public/invoicely-status-2026-09-15.txt",
+                       issuer="Invoicely API status", submitter="controller")
+    commit(court, direct_vm, incident_id, [status_page], "harbor")
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, incident_id, answer_for("RC23"))
+    assert record["verdict"] == "LIKELY_EXTERNAL_FAILURE" and record["severity"] == 4
+    assert finding(record, "R5")["by"] == "CODE" and finding(record, "R5")["state"] == "VIOLATED"
+    assert record["responsibility_allocation"] == [{"party": "EXTERNAL", "bps": 10000}]
+    assert record["compensation_or_bounty_recommendation"]["compensation_eligible"] is False
+    assert "AGENT_COMPROMISE" not in record["impact_classification"]
+    assert receipt(record, "E4")["origin"] == "PUBLIC"
 
 
 def test_profiles_and_ids_are_the_signers(court, direct_vm):

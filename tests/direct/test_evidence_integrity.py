@@ -224,7 +224,7 @@ def test_a_trace_with_a_gap_is_excluded_and_the_logging_duty_fails(court, direct
     r6 = finding(record, "R6")
     assert r6["state"] == "VIOLATED" and r6["by"] == "CODE"
     assert "LOGS_WITHHELD:R6" in record["reason_codes"]
-    assert record["verdict"] == "CONFIRMED_VIOLATION" and record["severity"] == 4
+    assert record["verdict"] == "CONFIRMED_COMPROMISE" and record["severity"] == 5
     assert "LOGGING_FAILURE" in record["impact_classification"]
     facts = {f["evidence_id"]: f for f in record["facts"]}
     assert facts["E2"]["values"]["sequence_gaps"] == 1
@@ -259,6 +259,29 @@ def test_impersonated_issuers_are_excluded(court, direct_vm, world_ids):
     record = adjudicate(court, direct_vm, incident_id, answer_for("RC02"))
     assert indicator(record, "SOURCE_IDENTITY_MISMATCH")["evidence_ids"] == ["E2"]
     assert record["verdict"] == "INSUFFICIENT_EVIDENCE"
+
+
+def test_a_tools_own_notice_cannot_shift_a_violation_off_the_controller(court, direct_vm,
+                                                                       world_ids):
+    """The controller chose the agent's tools, so a host it controls can sit
+    behind a tool registration: a tool provider's own admission of fault is
+    from the controller's sphere, and on its own it moves nothing off the
+    controller. RC10 carries the fault through the reporter's report instead."""
+    incident_id = file_case(court, direct_vm, "RC10")
+    commit(court, direct_vm, incident_id, [
+        item("TIMESTAMPED_FILE", "sources/docfetch/status-df-88.txt", submitter="tool",
+             issuer="Docfetch status page")], "harbor")
+    warp(direct_vm, later(86400 + 1))
+    answer = answer_for("RC10")
+    answer["indicators"]["TOOL_FAULT"] = {"state": "PRESENT", "note": "", "quotes": [
+        {"evidence_id": "E3", "text": "a caching fault in the fetch service returned stored "
+                                      "responses belonging to other tenants"}]}
+    record = adjudicate(court, direct_vm, incident_id, answer)
+    assert finding(record, "TOOL_FAULT")["state"] == "UNDETERMINED"
+    assert record["verdict"] == "CONFIRMED_VIOLATION"
+    assert record["responsibility_allocation"] == [{"party": "CONTROLLER", "bps": 10000}]
+    # the same fault shown by the reporter's own words is the tool's: RC10 in
+    # test_adversarial_cases.py finds LIKELY_EXTERNAL_FAILURE on exactly that
 
 
 def test_evidence_about_another_agent_is_unlinked(court, direct_vm, world_ids):

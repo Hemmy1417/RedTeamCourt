@@ -101,6 +101,19 @@ def test_a_case_that_does_not_hold_is_recorded_as_failed(court, direct_vm, world
     assert case["passed"] is False
 
 
+def test_a_case_outside_its_severity_band_is_recorded_as_failed(court, direct_vm, world_ids):
+    entry = CASES["RC14"]
+    as_sender(direct_vm, "controller")
+    case_id = court.register_adversarial_case(
+        "SP-000001", 1, entry["attack_category"], "the right verdict in the wrong band",
+        json.dumps(bundle_definition(entry)), "POLICY_COMPLIANT", 3, 5)
+    stage(direct_vm, answer_for("RC14"))
+    court.run_adversarial_case(case_id)
+    case = court.get_adversarial_case(case_id)
+    assert case["observed_verdict"] == "POLICY_COMPLIANT" and case["observed_severity"] == 1
+    assert case["passed"] is False
+
+
 def test_a_case_runs_once_and_anyone_may_run_it(court, direct_vm, world_ids):
     case_id = register_case(court, direct_vm, "RC15")
     stage(direct_vm, answer_for("RC15"))

@@ -72,15 +72,61 @@ def mock_panel_only(direct_vm, answer):
     mock_panel(direct_vm, answer)
 
 
-def test_validators_disagreeing_on_compromise_do_not_settle(court, direct_vm, world_ids):
-    """RC19: the leader reads an attacker in control; this validator's model
-    does not. Its consequence is a misconfiguration, not a compromise."""
+def test_an_undecided_cause_and_an_absent_one_are_the_same_consequence(court, direct_vm,
+                                                                      world_ids):
+    """A cause is the controller's to show, so a validator whose model cannot
+    tell whether the tool was at fault agrees with a leader whose model found
+    it was not."""
     compromise_round(court, direct_vm)
+    answer = answer_for("RC01")
+    answer["indicators"]["TOOL_FAULT"] = {"state": "UNDETERMINED", "quotes": [], "note": ""}
+    mock_panel_only(direct_vm, answer)
+    assert direct_vm.run_validator() is True
+
+
+def test_a_held_record_is_not_split_on_how_its_rules_were_shaded(court, direct_vm, world_ids):
+    """Live diagnostics, RC02: the verdict held for want of evidence, and one
+    validator's model called the alleged rule clear where the leader left it
+    unsettled. Nothing settles on a held record, so that is not a split."""
+    incident_id = file_case(court, direct_vm, "RC02")
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, incident_id, {"rules": {}, "indicators": {}})
+    assert record["verdict"] == "INSUFFICIENT_EVIDENCE"
+    assert finding(record, "R2")["state"] == "UNVERIFIABLE"
+    mock_panel_only(direct_vm, {"rules": {"R2": {
+        "state": "NOT_VIOLATED", "note": "", "quotes": [
+            {"evidence_id": "E1", "text": "Harbor Supplies accounts team"}]}},
+        "indicators": {}})
+    assert direct_vm.run_validator() is True
+
+
+def test_a_settled_finding_is_split_on_which_rules_it_rests_on(court, direct_vm, world_ids):
+    """On a record that settles, the rules a confirmed finding rests on are a
+    consequence: a validator that finds R7 was not breached disagrees even
+    though the verdict, severity and money would not change."""
+    compromise_round(court, direct_vm)
+    answer = answer_for("RC01")
+    del answer["rules"]["R7"]
+    mock_panel_only(direct_vm, answer)
+    assert direct_vm.run_validator() is False
+
+
+def test_validators_disagreeing_on_compromise_do_not_settle(court, direct_vm, world_ids,
+                                                           capsys):
+    """RC19: the leader reads an attacker in control; this validator's model
+    does not. Its consequence is a misconfiguration, not a compromise, and it
+    prints the reading behind its vote."""
+    compromise_round(court, direct_vm)
+    capsys.readouterr()
     answer = answer_for("RC01")
     answer["indicators"]["AGENT_UNDER_EXTERNAL_CONTROL"] = {"state": "ABSENT", "quotes": [],
                                                             "note": ""}
     mock_panel_only(direct_vm, answer)
     assert direct_vm.run_validator() is False
+    out = capsys.readouterr().out
+    assert "[DISAGREE] consequence: " in out
+    assert "[MINE] LIKELY_MISCONFIGURATION R1=VIOLATED R7=VIOLATED" in out
+    assert "AGENT_UNDER_EXTERNAL_CONTROL=ABSENT" in out
 
 
 def test_a_severe_verdict_without_evidence_fails_the_gate(court, direct_vm, mod, world_ids):
