@@ -12,7 +12,7 @@ import pytest
 
 from tests.direct.support import (
     AGENT, CASES, CATALOGUE, ENGINE_CASES, ROOT, adjudicate, answer_for, as_sender,
-    bundle_definition, file_case, later, register_case, stage, warp)
+    bundle_definition, commit, file_case, later, open_incident, register_case, stage, warp)
 
 NEEDS_A_LIVE_INCIDENT = ("RC05", "RC26")
 
@@ -66,6 +66,70 @@ def test_replay_of_a_finalized_incident_is_rejected(court, direct_vm, world_ids)
     assert any(code.startswith("REPLAY:") for code in record["reason_codes"])
     assert record["compensation_or_bounty_recommendation"]["report_bond"] == "FORFEIT"
     assert record["compensation_or_bounty_recommendation"]["compensation_atto"] == "0"
+
+
+def test_a_settled_record_relabelled_is_still_a_replay(court, direct_vm, world_ids):
+    """Harbor's compromise finalized and paid. Harbor files again with the same
+    report declared as threat intelligence and Meridian's trace declared as a
+    policy document - categories that may honestly recur. The registry keys
+    bytes and transactions, not labels: these are the settled records, the
+    filing is a replay, and the report bond is forfeit."""
+    first = file_case(court, direct_vm, "RC01")
+    warp(direct_vm, later(86400 + 1))
+    adjudicate(court, direct_vm, first, answer_for("RC01"))
+    warp(direct_vm, later(2 * 86400 + 2))
+    as_sender(direct_vm, "stranger")
+    court.finalize_incident(first)
+    report, trace = CASES["RC01"]["evidence"][0], CASES["RC01"]["evidence"][2]
+    second = open_incident(court, direct_vm)
+    commit(court, direct_vm, second, [dict(report, category="THREAT_INTEL"),
+                                      dict(trace, category="POLICY_DOCUMENT",
+                                           submitter="reporter")])
+    warp(direct_vm, later(3 * 86400 + 3))
+    record = adjudicate(court, direct_vm, second, answer_for("RC01"))
+    assert record["verdict"] == "REJECTED"
+    assert any(code.startswith("REPLAY:") for code in record["reason_codes"])
+    reuse = [f for f in record["indicators"] if f["id"] == "CROSS_CASE_REUSE"][0]
+    assert reuse["evidence_ids"] == ["E1", "E2"]
+    advice = record["compensation_or_bounty_recommendation"]
+    assert advice["report_bond"] == "FORFEIT" and advice["compensation_atto"] == "0"
+
+
+def test_a_record_the_reporter_cannot_mint_belongs_to_one_incident(court, direct_vm,
+                                                                  world_ids):
+    """Harbor commits Meridian's trace to one incident declared as a policy
+    document, then to a second declared as a timestamped file - categories
+    that may honestly recur. What Meridian's origin served is not Harbor's to
+    relabel: the first commitment claims it, and the second copy is reuse."""
+    trace = CASES["RC01"]["evidence"][2]
+    first = open_incident(court, direct_vm)
+    commit(court, direct_vm, first, [dict(trace, category="POLICY_DOCUMENT",
+                                          submitter="reporter")])
+    second = open_incident(court, direct_vm)
+    commit(court, direct_vm, second, [dict(trace, category="TIMESTAMPED_FILE",
+                                           submitter="reporter"),
+                                      CASES["RC01"]["evidence"][0]])
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, second, {"rules": {}, "indicators": {}})
+    reuse = [f for f in record["indicators"] if f["id"] == "CROSS_CASE_REUSE"][0]
+    assert reuse["evidence_ids"] == ["E1"]
+
+
+def test_a_shared_record_may_recur_across_incidents(court, direct_vm, world_ids):
+    """The mirror: a captured attack payload is shared by nature - two
+    incidents may both cite it, and the second copy is not reuse."""
+    file_case(court, direct_vm, "RC01")
+    invoice = CASES["RC01"]["evidence"][1]
+    advisory = dict(invoice, category="THREAT_INTEL",
+                    path="sources/public/advisory-invoice-injection.txt",
+                    issuer="Invoice Threat Watch")
+    second = open_incident(court, direct_vm)
+    commit(court, direct_vm, second, [invoice, advisory])
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, second, {"rules": {}, "indicators": {}})
+    reuse = [f for f in record["indicators"] if f["id"] == "CROSS_CASE_REUSE"][0]
+    assert reuse["state"] == "ABSENT"
+    assert "EXCLUDED:E1" not in record["reason_codes"]
 
 
 def test_cross_case_contamination_is_excluded(court, direct_vm, world_ids):

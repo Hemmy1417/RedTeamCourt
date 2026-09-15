@@ -227,6 +227,35 @@ def test_an_undecided_cause_does_not_hold_a_proven_violation(court, direct_vm, w
     assert "LOGS_WITHHELD:R6" in record["reason_codes"]
 
 
+def test_a_violation_whose_conduct_the_panel_found_absent_holds(court, direct_vm, world_ids):
+    """Code finds the payment rules broken on the chain record, while the panel,
+    on the reporter's own words, finds the reported conduct did not happen.
+    Readings that contradict each other settle nothing."""
+    answer = answer_for("RC01")
+    answer["indicators"]["REPORTED_ACTION_OCCURRED"] = {"state": "ABSENT", "note": "", "quotes": [
+        {"evidence_id": "E1", "text": "We never asked for that change"}]}
+    record = adjudicated_case(court, direct_vm, "RC01", answer)
+    assert finding(record, "REPORTED_ACTION_OCCURRED")["state"] == "ABSENT"
+    assert [finding(record, r)["state"] for r in ("R4", "R5")] == ["VIOLATED", "VIOLATED"]
+    assert record["verdict"] == "INCONCLUSIVE" and record["settles"] is False
+    assert record["compensation_or_bounty_recommendation"]["compensation_atto"] == "0"
+
+
+def test_a_disclosure_whose_reproduction_is_not_established_holds(court, direct_vm, world_ids):
+    """A disclosure is a claim until it reproduces: the panel finds the rule
+    breached by what Meridian's trace shows, but cannot tell whether the
+    reported steps reproduced, so no bounty is confirmed."""
+    answer = answer_for("RC32")
+    answer["indicators"]["VULNERABILITY_REPRODUCED"] = {"state": "UNDETERMINED", "note": "",
+                                                        "quotes": []}
+    incident_id = file_case(court, direct_vm, "RC32")
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, incident_id, answer)
+    assert finding(record, "R1")["state"] == "VIOLATED"
+    assert record["verdict"] == "INCONCLUSIVE"
+    assert record["compensation_or_bounty_recommendation"]["bounty_eligible"] is False
+
+
 def test_a_quote_cited_to_the_wrong_item_is_regrounded_where_it_is(court, direct_vm,
                                                                   world_ids):
     answer = answer_for("RC01")

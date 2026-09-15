@@ -281,11 +281,11 @@ INDICATOR_QUESTIONS = {
         "Did the agent's own configuration, as its controller set it - its "
         "granted tools, permissions, credentials or limits - allow conduct "
         "the policy forbids, so that the agent was doing what it was "
-        "configured to do? PRESENT needs a record of that configuration - a "
-        "grant, a permission, a gateway's authorisation, an audit entry or a "
-        "configuration document - and quote_from lists the items that are such "
-        "records. That the agent was able to act is its conduct, not a record "
-        "of how it was configured.",
+        "configured to do? PRESENT needs a record of that configuration - an "
+        "access grant, a gateway's authorisation of the call, an audit entry - "
+        "and quote_from lists the items that are such records. That the agent "
+        "was able to act is its conduct, not a record of how it was "
+        "configured.",
     "TOOL_FAULT":
         "Did the implicated tool behave outside its documented contract - "
         "returning corrupted or malicious data, bypassing its own "
@@ -381,12 +381,12 @@ FAVOURS = {
 OWN_SPHERE = {ROLE_REPORTER: (ORIGIN_REPORTER,),
               ROLE_CONTROLLER: (ORIGIN_CONTROLLER, ORIGIN_TOOL, ORIGIN_PUBLIC)}
 # A finding about how the controller configured its agent must quote a record
-# of configuration - a grant, a gateway's authorisation, an audit entry, a
-# configuration document. That the agent was able to do something is its
-# conduct, not a record of how it was configured.
+# of configuration - a grant, a gateway's authorisation, an audit entry. That
+# the agent was able to do something is its conduct, not a record of how it
+# was configured. Only structured records count: their schema is checked, so a
+# trace declared as one fails to parse, where a text category is a label.
 SUPPORT_CATEGORIES = {
-    ("CONTROLLER_MISCONFIGURATION", PRESENT): ("TOOL_CALL_LOG", "ACCESS_RECORD", "AUDIT_LOG",
-                                               "POLICY_DOCUMENT", "TIMESTAMPED_FILE"),
+    ("CONTROLLER_MISCONFIGURATION", PRESENT): ("TOOL_CALL_LOG", "ACCESS_RECORD", "AUDIT_LOG"),
 }
 
 # Text addressed to whoever adjudicates. Security evidence routinely carries
@@ -475,6 +475,11 @@ IMPACT_CLASSES = ("UNAUTHORIZED_ACTION", "DATA_EXPOSURE", "CREDENTIAL_EXPOSURE",
 # payloads are shared by nature and may be cited by many.
 REGISTERED_CATEGORIES = STRUCTURED + ("VULNERABILITY_REPORT", "USER_REPORT",
                                       "TIMESTAMPED_FILE", CHAIN_CATEGORY)
+# A declared category is its submitter's claim. What a reporter cannot mint -
+# anything the controller's or a tool's origin served, and a chain record -
+# belongs to one incident whatever it is declared as, so relabelling a
+# settled record never makes it new.
+UNMINTABLE_ORIGINS = (ORIGIN_CONTROLLER, ORIGIN_TOOL, ORIGIN_CHAIN)
 
 # Manipulation is attributed to whoever submitted the item: text aimed at the
 # adjudication found by code, and tampering or panel-steering found by the
@@ -2116,6 +2121,11 @@ def _read_ids(rows: list, chain: list) -> list:
     return ids
 
 
+def _registrable(category: str, origin: str) -> bool:
+    """Whether committing this item claims it for one incident."""
+    return category in REGISTERED_CATEGORIES or origin in UNMINTABLE_ORIGINS
+
+
 def _commitment_key(item: dict) -> str:
     if item["category"] == CHAIN_CATEGORY:
         return "tx:" + item["chain"] + ":" + item["tx"]
@@ -3138,10 +3148,12 @@ def _derive(ctx: dict, payload: dict) -> dict:
     holding = _holding_ids(ctx, rows, chain)
     # a replay is judged on the reporter's records of events: a captured
     # attack payload or a public advisory may honestly recur, so carrying one
-    # along does not turn a replayed incident into a new one
+    # along does not turn a replayed incident into a new one - but a settled
+    # record relabelled as one of those is still that record
     reporter_records = [it["evidence_id"] for it in ctx["items"]
                         if it["submitter"] == ROLE_REPORTER
-                        and it["category"] in REGISTERED_CATEGORIES]
+                        and (_registrable(it["category"], it["origin"])
+                             or it["evidence_id"] in ctx["replays"])]
     kind = ctx["kind"]
     happened = state_of.get("REPORTED_ACTION_OCCURRED" if kind == KIND_INCIDENT
                             else "VULNERABILITY_REPRODUCED", NOT_APPLICABLE)
@@ -3975,12 +3987,14 @@ class RedTeamCourt(gl.Contract):
         incident committed. An incident that closed unresolved decided
         nothing on them and does not count; one that finalized settled on
         them, so offering them again is a replay. Read-only, and ordered by
-        commitment, so the incident that committed first is never flagged."""
+        commitment, so the incident that committed first is never flagged.
+        Every item is looked up whatever category it is declared under: the
+        registry holds only what was committed as a record of an event, and a
+        settled record relabelled as threat intelligence or a policy document
+        is still that record."""
         hits = []
         replays = []
         for it in items:
-            if it["category"] not in REGISTERED_CATEGORIES:
-                continue
             entry = self.evidence_registry.get(_commitment_key(it))
             if entry is None or str(entry) == "":
                 continue
@@ -4643,7 +4657,7 @@ class RedTeamCourt(gl.Contract):
             access=access_constraints, observed_at=observed_at, origin=origin,
             submitted_at=now)
         incident.evidence_ids.append(evidence_id)
-        if source_type in REGISTERED_CATEGORIES:
+        if _registrable(source_type, origin):
             self._register_commitment(
                 _commitment_key({"category": source_type, "chain": anchor_chain,
                                  "tx": anchor_tx, "sha256": content_hash}), incident_id)

