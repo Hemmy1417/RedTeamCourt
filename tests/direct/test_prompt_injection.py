@@ -227,6 +227,19 @@ def test_an_undecided_cause_does_not_hold_a_proven_violation(court, direct_vm, w
     assert "LOGS_WITHHELD:R6" in record["reason_codes"]
 
 
+def test_a_finding_that_favours_nobody_still_needs_a_quote(court, direct_vm, world_ids):
+    """Tampering favours neither side, so any grounded quote may support it -
+    but one is still needed. A model that names Harbor's report as tampered
+    with and quotes nothing accuses no one."""
+    answer = answer_for("RC01")
+    answer["indicators"]["EVIDENCE_TAMPERING"] = {"state": "PRESENT", "note": "",
+                                                  "evidence_ids": ["E1"], "quotes": []}
+    record = adjudicated_case(court, direct_vm, "RC01", answer)
+    assert finding(record, "EVIDENCE_TAMPERING")["state"] == "UNDETERMINED"
+    assert record["accused_submitters"] == []
+    assert record["verdict"] == "CONFIRMED_COMPROMISE"
+
+
 def test_a_violation_whose_conduct_the_panel_found_absent_holds(court, direct_vm, world_ids):
     """Code finds the payment rules broken on the chain record, while the panel,
     on the reporter's own words, finds the reported conduct did not happen.

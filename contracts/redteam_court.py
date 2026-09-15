@@ -387,6 +387,9 @@ OWN_SPHERE = {ROLE_REPORTER: (ORIGIN_REPORTER,),
 # trace declared as one fails to parse, where a text category is a label.
 SUPPORT_CATEGORIES = {
     ("CONTROLLER_MISCONFIGURATION", PRESENT): ("TOOL_CALL_LOG", "ACCESS_RECORD", "AUDIT_LOG"),
+    # a fix is verified by test results, not by any item that happens to sit
+    # outside the controller's sphere - an unrelated chain record included
+    ("REMEDIATION_VERIFIED", PRESENT): ("REMEDIATION_TEST",),
 }
 
 # Text addressed to whoever adjudicates. Security evidence routinely carries
@@ -2080,11 +2083,23 @@ def _identity_mismatch(declared: str, origin: str, names: dict) -> bool:
     origin served the bytes: an impersonation. A name the incident's parties
     do not use is an unverifiable claim, not a mismatch."""
     key = _name_key(declared)
+    # an issuer naming the party whose origin served it is that party speaking,
+    # whatever other names its words happen to contain: otherwise a reporter
+    # could register a name inside the controller's issuer strings and have
+    # every one of the controller's records excluded
+    if any(len(name) >= 4 and name in key for name in names.get(origin, [])):
+        return False
     for cls in (ORIGIN_REPORTER, ORIGIN_CONTROLLER, ORIGIN_TOOL):
         for name in names.get(cls, []):
             if len(name) >= 4 and name in key and cls != origin:
                 return True
     return False
+
+
+def _names_overlap(a: str, b: str) -> bool:
+    ka = _name_key(a)
+    kb = _name_key(b)
+    return len(ka) >= 4 and len(kb) >= 4 and (ka in kb or kb in ka)
 
 
 # == adjudication: findings ===================================================
@@ -2143,10 +2158,14 @@ def _holding_ids(ctx: dict, rows: list, chain: list) -> list:
     it: nobody controls it. Oversized or malformed bytes are verified bytes
     their submitter chose to commit, and are simply excluded."""
     submitter = {it["evidence_id"]: it["submitter"] for it in ctx["items"]}
+    origin = _origins_of(ctx)
     held = []
     for r in rows:
+        # who controls availability is the origin's party, not whoever cited
+        # the item: a controller taking down its own record that the reporter
+        # cited must not hold the case
         if r["status"] in (ROW_UNAVAILABLE, ROW_HASH_MISMATCH) \
-                and submitter[r["evidence_id"]] == ROLE_REPORTER:
+                and origin[r["evidence_id"]] == ORIGIN_REPORTER:
             held.append(r["evidence_id"])
     for f in chain:
         if f["state"] == CHAIN_UNAVAILABLE or \
@@ -3060,14 +3079,31 @@ def _rule_outcome(state: str) -> str:
 # == adjudication: attributing manipulation ===================================
 
 def _manipulated_ids(indicators: list) -> list:
+    """Items found manipulated: those code flagged for text aimed at the
+    adjudication, and those a panel finding of tampering or steering QUOTES -
+    an id a model names without quoting it accuses nobody."""
     out = []
     for f in indicators:
-        if f["state"] == PRESENT and (f["id"] in STEERING_CODE
-                                      or f["id"] in PANEL_MANIPULATION):
-            for eid in f["evidence_ids"]:
-                if eid not in out:
-                    out.append(eid)
+        if f["state"] != PRESENT:
+            continue
+        if f["id"] in STEERING_CODE:
+            ids = f["evidence_ids"]
+        elif f["id"] in PANEL_MANIPULATION:
+            ids = [q["evidence_id"] for q in f["quotes"]]
+        else:
+            continue
+        for eid in ids:
+            if eid not in out:
+                out.append(eid)
     return out
+
+
+def _authors_of(ctx: dict) -> dict:
+    """Who controls each item's bytes: the party whose registered origin served
+    it. Manipulation is that party's, not whoever cited the item - a reporter
+    quoting the controller's own steering statement has steered nothing. A
+    public source or a chain record belongs to no party."""
+    return {it["evidence_id"]: ORIGIN_ROLE.get(it["origin"], "") for it in ctx["items"]}
 
 
 def _discounted(findings: list, manipulated: list, origins: dict, categories: dict,
@@ -3129,9 +3165,9 @@ def _derive(ctx: dict, payload: dict) -> dict:
     plan = _plan(ctx, rows, payload["facts"], chain, {k: payload[k] for k in SCAN_KEYS})
     eligible = plan["eligible"]
     origins = _origins_of(ctx)
-    submitter = {it["evidence_id"]: it["submitter"] for it in ctx["items"]}
+    authors = _authors_of(ctx)
     manipulated = _manipulated_ids(payload["indicators"])
-    accused = sorted(set(submitter[e] for e in manipulated))
+    accused = sorted(set(authors[e] for e in manipulated if authors[e] != ""))
     reporter_manipulated = ROLE_REPORTER in accused
     respondent_manipulated = ROLE_CONTROLLER in accused or ROLE_TOOL in accused
     categories = _categories_of(ctx)
@@ -3235,7 +3271,7 @@ def _derive(ctx: dict, payload: dict) -> dict:
     for eid in holding:
         reasons.append("HOLDS:" + eid)
     for eid in manipulated:
-        reasons.append("MANIPULATION:" + submitter[eid] + ":" + eid)
+        reasons.append("MANIPULATION:" + (authors[eid] or "no party") + ":" + eid)
     for subject in rules_fell + indicators_fell:
         reasons.append("DISCOUNTED:" + subject)
     for f in rules:
@@ -3315,10 +3351,10 @@ def _derive_remediation(ctx: dict, payload: dict) -> dict:
     indicators = payload["indicators"] + [plan["registry"]]
     state_of = {f["id"]: f["state"] for f in indicators}
     category_of = {it["evidence_id"]: it["category"] for it in ctx["items"]}
-    submitter = {it["evidence_id"]: it["submitter"] for it in ctx["items"]}
     tests = [e for e in plan["eligible"] if category_of[e] == "REMEDIATION_TEST"]
+    authors = _authors_of(ctx)
     manipulated = _manipulated_ids(payload["indicators"])
-    accused = sorted(set(submitter[e] for e in manipulated))
+    accused = sorted(set(authors[e] for e in manipulated if authors[e] != ""))
     holding = _holding_ids(ctx, rows, chain)
     if holding:
         verdict = "SOURCE_UNAVAILABLE"
@@ -3338,7 +3374,7 @@ def _derive_remediation(ctx: dict, payload: dict) -> dict:
     for eid in holding:
         reasons.append("HOLDS:" + eid)
     for eid in manipulated:
-        reasons.append("MANIPULATION:" + submitter[eid] + ":" + eid)
+        reasons.append("MANIPULATION:" + (authors[eid] or "no party") + ":" + eid)
     for f in indicators:
         if f["state"] == PRESENT:
             reasons.append("INDICATOR:" + f["id"])
@@ -3536,21 +3572,27 @@ def _summary(ctx: dict, outcome: dict) -> str:
     return "; ".join(parts) + "."
 
 
-def _unread_since(original: dict, record: dict) -> list:
+def _unread_since(original: dict, record: dict, appellant: str) -> list:
     """Record ids of the items an appealed round read - bytes examined, or a
     transaction verified - that a readjudication could not read again. The
     bytes are hash-bound, so nobody can change what the first panel saw, but a
     party can stop serving it: a readjudication without it would judge less
     than the record it replaces, and a party could win its own appeal by
-    withdrawing its own admission. So it does not run."""
+    withdrawing its own admission. So it does not run - for the appellant's
+    own items, and for chain records, whose outage nobody controls. Were the
+    other side's withdrawal to stop it too, the side the standing record favours
+    could block every appeal against it by taking its own item down."""
     def read_by(rec: dict) -> dict:
         state = {r["evidence_id"]: r["status"] for r in rec["rows"]}
         state.update({f["evidence_id"]: f["state"] for f in rec["chain"]})
         return {e["record_id"]: state.get(e["evidence_id"]) for e in rec["evidence"]}
     before = read_by(original)
     after = read_by(record)
+    sphere = OWN_SPHERE.get(appellant, (ROLE_ORIGIN.get(appellant, ""),))
+    stops = [e["record_id"] for e in original["evidence"]
+             if e["origin"] == ORIGIN_CHAIN or e["origin"] in sphere]
     return [rid for rid, state in before.items()
-            if state in (ROW_EXAMINED, CHAIN_VERIFIED)
+            if rid in stops and state in (ROW_EXAMINED, CHAIN_VERIFIED)
             and after.get(rid) not in (ROW_EXAMINED, CHAIN_VERIFIED)]
 
 
@@ -3565,6 +3607,7 @@ def _record_digest(record: dict) -> str:
 
 ROLE_ORIGIN = {ROLE_REPORTER: ORIGIN_REPORTER, ROLE_CONTROLLER: ORIGIN_CONTROLLER,
                ROLE_TOOL: ORIGIN_TOOL}
+ORIGIN_ROLE = {origin: role for role, origin in ROLE_ORIGIN.items()}
 
 
 def _parties(reporter_name: str, controller_name: str, agent_name: str, tool_name: str,
@@ -3575,7 +3618,7 @@ def _parties(reporter_name: str, controller_name: str, agent_name: str, tool_nam
     panel reads, and the prefixes that classify every evidence location."""
     return {
         "names": {ORIGIN_REPORTER: [_name_key(reporter_name)],
-                  ORIGIN_CONTROLLER: [_name_key(controller_name)],
+                  ORIGIN_CONTROLLER: [_name_key(controller_name), _name_key(agent_name)],
                   ORIGIN_TOOL: [_name_key(tool_name)] if tool_name != "" else []},
         "display": {"agent": agent_name, "controller": controller_name,
                     "reporter": reporter_name, "tool": tool_name},
@@ -3891,6 +3934,13 @@ class RedTeamCourt(gl.Contract):
             version = version - 1
         return None
 
+    def _withdrawal_delay(self, agent, at: int) -> int:
+        pv = self._in_effect(str(agent.policy_id), at)
+        if pv is None:
+            pv = self._version(str(agent.policy_id),
+                               int(self.policies.get(str(agent.policy_id)).latest_version))
+        return json.loads(str(pv.definition))["withdrawal_delay_seconds"]
+
     def _notice_seconds(self, policy_id: str, at: int) -> int:
         """The notice a change to this policy must give: the activation delay
         of the version in effect, or of the latest version when none is."""
@@ -3982,10 +4032,11 @@ class RedTeamCourt(gl.Contract):
             ids.append(incident_id)
             self.evidence_registry[key] = " ".join(ids)
 
-    def _registry_hits(self, items: list, incident_id: str) -> tuple:
+    def _registry_hits(self, items: list, incident_id: str, agent_id: str) -> tuple:
         """(hits, replays): items whose bytes or transaction an EARLIER
-        incident committed. An incident that closed unresolved decided
-        nothing on them and does not count; one that finalized settled on
+        incident on the same agent committed. An incident that closed
+        unresolved or finalized REJECTED decided nothing on them and does not
+        count; one that finalized otherwise settled on
         them, so offering them again is a replay. Read-only, and ordered by
         commitment, so the incident that committed first is never flagged.
         Every item is looked up whatever category it is declared under: the
@@ -3995,16 +4046,22 @@ class RedTeamCourt(gl.Contract):
         hits = []
         replays = []
         for it in items:
-            entry = self.evidence_registry.get(_commitment_key(it))
+            entry = self.evidence_registry.get(agent_id + "|" + _commitment_key(it))
             if entry is None or str(entry) == "":
                 continue
             ids = str(entry).split(" ")
             earlier = ids[:ids.index(incident_id)] if incident_id in ids else ids
             for other in earlier:
                 prior = self.incidents.get(other)
-                if prior is None:
+                # a filing finalized as REJECTED decided nothing about the
+                # records it carried, like one that closed unresolved: were it
+                # to count, anyone could file another's records first, lose,
+                # and have the real report rejected as a replay
+                if prior is None or str(prior.status) == INCIDENT_CLOSED or (
+                        str(prior.status) == INCIDENT_FINALIZED
+                        and str(prior.verdict) == "REJECTED"):
                     continue
-                if str(prior.status) != INCIDENT_CLOSED and it["evidence_id"] not in hits:
+                if it["evidence_id"] not in hits:
                     hits.append(it["evidence_id"])
                 if str(prior.status) == INCIDENT_FINALIZED and it["evidence_id"] not in replays:
                     replays.append(it["evidence_id"])
@@ -4041,7 +4098,8 @@ class RedTeamCourt(gl.Contract):
             "items": items, "evidence_commitment": _evidence_commitment(items),
             "now": now, "finding": finding,
         }
-        ctx["registry_hits"], ctx["replays"] = self._registry_hits(items, ctx["incident_id"])
+        ctx["registry_hits"], ctx["replays"] = self._registry_hits(items, ctx["incident_id"],
+                                                                   ctx["agent_id"])
         return ctx
 
     def _run_round(self, ctx: dict) -> dict:
@@ -4411,15 +4469,12 @@ class RedTeamCourt(gl.Contract):
             self._fail("the fund holds " + str(balance) + " atto")
         pending = str(agent.bond_withdrawal_after) if fund == FUND_BOND \
             else str(agent.pool_withdrawal_after)
-        if pending != "":
-            self._fail("a withdrawal from this fund is already pending until " + pending)
         now = self._now()
         at = _iso_epoch(now)
-        pv = self._in_effect(str(agent.policy_id), at)
-        if pv is None:
-            pv = self._version(str(agent.policy_id),
-                               int(self.policies.get(str(agent.policy_id)).latest_version))
-        after = _epoch_iso(at + json.loads(str(pv.definition))["withdrawal_delay_seconds"])
+        delay = self._withdrawal_delay(agent, at)
+        if pending != "" and at <= _iso_epoch(pending) + delay:
+            self._fail("a withdrawal from this fund is already pending until " + pending)
+        after = _epoch_iso(at + delay)
         if fund == FUND_BOND:
             agent.bond_withdrawal_atto = u256(amount_atto)
             agent.bond_withdrawal_after = after
@@ -4442,8 +4497,14 @@ class RedTeamCourt(gl.Contract):
         after = str(agent.bond_withdrawal_after) if bond else str(agent.pool_withdrawal_after)
         if after == "":
             self._fail("no withdrawal from this fund is pending")
-        if _iso_epoch(self._now()) < _iso_epoch(after):
+        at = _iso_epoch(self._now())
+        if at < _iso_epoch(after):
             self._fail("the withdrawal completes at " + after)
+        if at > _iso_epoch(after) + self._withdrawal_delay(agent, at):
+            # a request is completed within one more delay or not at all: a
+            # standing request would let a controller empty its bond the moment
+            # it saw an incident coming
+            self._fail("the withdrawal lapsed; request it again")
         balance = int(agent.bond_atto) if bond else int(agent.pool_atto)
         reserved = int(agent.bond_reserved_atto) if bond else int(agent.pool_reserved_atto)
         requested = int(agent.bond_withdrawal_atto) if bond else int(agent.pool_withdrawal_atto)
@@ -4505,6 +4566,11 @@ class RedTeamCourt(gl.Contract):
                 return ("the implicated tool is not registered", None)
             if tool.provider == gl.message.sender_address:
                 return ("a tool provider cannot file over its own tool", None)
+        for other in [str(agent.controller_name), str(agent.name)] + \
+                ([str(tool.name)] if tool is not None else []):
+            if _names_overlap(str(reporter.name), other):
+                return ("the reporter's registered name overlaps " + other
+                        + ": a party named like another could speak as it", None)
         if value != policy["report_bond_atto"]:
             return ("send exactly the report bond: " + str(policy["report_bond_atto"])
                     + " atto", None)
@@ -4632,7 +4698,8 @@ class RedTeamCourt(gl.Contract):
         for eid in incident.evidence_ids:
             ev = self.evidence.get(str(eid))
             if str(ev.phase) == PHASE_REMEDIATION:
-                remediation = remediation + 1
+                if str(ev.submitter) == role:
+                    remediation = remediation + 1
             elif str(ev.submitter) == role:
                 mine = mine + 1
             if source_type == CHAIN_CATEGORY:
@@ -4643,7 +4710,9 @@ class RedTeamCourt(gl.Contract):
                            "this incident")
         if phase == PHASE_REMEDIATION:
             if remediation >= MAX_REMEDIATION_EVIDENCE * MAX_REMEDIATION_REVIEWS:
-                self._fail("this incident holds its maximum of remediation evidence")
+                self._fail("each party commits at most "
+                           + str(MAX_REMEDIATION_EVIDENCE * MAX_REMEDIATION_REVIEWS)
+                           + " remediation items")
         elif mine >= MAX_ROLE_EVIDENCE:
             self._fail("each party commits at most " + str(MAX_ROLE_EVIDENCE)
                        + " items to a case and its appeals")
@@ -4659,8 +4728,9 @@ class RedTeamCourt(gl.Contract):
         incident.evidence_ids.append(evidence_id)
         if _registrable(source_type, origin):
             self._register_commitment(
-                _commitment_key({"category": source_type, "chain": anchor_chain,
-                                 "tx": anchor_tx, "sha256": content_hash}), incident_id)
+                str(incident.agent_id) + "|" + _commitment_key(
+                    {"category": source_type, "chain": anchor_chain, "tx": anchor_tx,
+                     "sha256": content_hash}), incident_id)
         return evidence_id
 
     @gl.public.write
@@ -4707,8 +4777,16 @@ class RedTeamCourt(gl.Contract):
             self._fail("this incident is " + status + "; it is adjudicated once")
         now = self._now()
         at = _iso_epoch(now)
-        if status == INCIDENT_OPEN and at <= _iso_epoch(str(incident.response_deadline)):
-            self._fail("respondents may still answer until " + str(incident.response_deadline))
+        if at <= _iso_epoch(str(incident.response_deadline)):
+            if status == INCIDENT_OPEN:
+                self._fail("respondents may still answer until "
+                           + str(incident.response_deadline))
+            if self._role(incident) != ROLE_REPORTER:
+                # respondents answering early lets the reporter proceed early; it
+                # never lets a respondent judge the case before the reporter has
+                # committed its evidence
+                self._fail("until " + str(incident.response_deadline)
+                           + " only the reporter can ask for the adjudication")
         record_ids = self._case_record_ids(incident)
         if len(record_ids) == 0:
             self._fail("no evidence has been committed to this incident")
@@ -4804,7 +4882,7 @@ class RedTeamCourt(gl.Contract):
         ctx = self._ctx(MODE_READJUDICATION, adjudication_id, incident,
                         self._round_items(self._case_record_ids(incident)), now, {})
         outcome, record = self._adjudicate(ctx)
-        lost = _unread_since(original, record)
+        lost = _unread_since(original, record, str(appeal.appellant_role))
         if lost:
             self._fail("the appealed round read " + ", ".join(lost) + ", which this round "
                        "could not read again; the appeal stays open until it can, or lapses")
@@ -5225,7 +5303,8 @@ class RedTeamCourt(gl.Contract):
             "items": items, "evidence_commitment": _evidence_commitment(items),
             "now": now, "finding": {},
         }
-        ctx["registry_hits"], ctx["replays"] = self._registry_hits(items, bundle["incident_id"])
+        ctx["registry_hits"], ctx["replays"] = self._registry_hits(items, bundle["incident_id"],
+                                                                   agent["agent_id"])
         outcome, record = self._adjudicate(ctx)
         record["case_id"] = case_id
         self._store_record(record)
@@ -5523,7 +5602,9 @@ class RedTeamCourt(gl.Contract):
             "found": True, "incident_id": incident_id, "as_of": as_of, "status": status,
             "verdict": str(incident.verdict), "severity": int(incident.severity),
             "settles": record["settles"] if record is not None else False,
-            "can_request_adjudication": status == INCIDENT_RESPONDED or
+            "can_request_adjudication": status in (INCIDENT_OPEN, INCIDENT_RESPONDED)
+            and at > _iso_epoch(str(incident.response_deadline)),
+            "reporter_can_request_adjudication": status == INCIDENT_RESPONDED or
             (status == INCIDENT_OPEN and at > _iso_epoch(str(incident.response_deadline))),
             "appeal_window_open": adjudicated and appeal is None
             and at <= _iso_epoch(str(incident.appeal_deadline))

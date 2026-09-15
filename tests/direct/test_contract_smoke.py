@@ -59,7 +59,8 @@ def test_compromise_incident_end_to_end(court, direct_vm, world_ids):
     assert court.submit_counterreport(incident_id, "Docfetch did what the token allowed.") \
         == "RESPONDED"
 
-    record = adjudicate(court, direct_vm, incident_id, answer_for("RC01"))
+    # both answered, so the reporter may go early; anyone else waits for the deadline
+    record = adjudicate(court, direct_vm, incident_id, answer_for("RC01"), requester="harbor")
     sample = os.environ.get("REDTEAM_SAMPLE_OUT")
     if sample:
         # scripts/run_direct_mode.py prints this record for a reader

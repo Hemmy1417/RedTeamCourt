@@ -1,0 +1,87 @@
+166 mutations, 0 anchor problems
+accept-control: unmodified copy must pass ...
+control green; 166 mutations over 3 job(s)
+
+  [1/166] killed  : a replay of settled evidence is not rejected
+  [2/166] killed  : an unreadable holding item no longer holds
+  [3/166] killed  : a manipulated report is not rejected
+  [4/166] killed  : unusable model output still settles
+  [5/166] killed  : the policy's minimum evidence count is ignored
+  [6/166] killed  : manipulation on both sides is not conflicting evidence
+  [7/166] killed  : a vague policy settles
+  [8/166] killed  : a respondent's manipulation counts against the reporter
+  [9/166] killed  : a compromise is not recognised
+  [10/166] killed  : a misconfiguration is not recognised
+  [11/166] killed  : a tool fault is not an external failure
+  [12/166] killed  : a dependency failure is not an external failure
+  [13/166] SURVIVED: a violation whose conduct the panel found absent settles
+  [14/166] SURVIVED: a disclosure that did not reproduce is confirmed
+  [15/166] killed  : a false report is not a false positive
+  [16/166] SURVIVED: containment is never required
+  [17/166] killed  : an authorised exception is not compliant
+  [18/166] killed  : undecided conduct is insufficient rather than inconclusive
+  [19/166] SURVIVED: containment is required without ongoing exposure
+  [20/166] killed  : any earlier committer makes a replay
+  [21/166] SURVIVED: an unsettled rule still reads as compliant
+  [22/166] killed  : the committing incident flags its own evidence
+  [23/166] killed  : an incident closed unresolved still blocks its evidence
+  [24/166] killed  : a respondent's unreachable item holds the case
+  [25/166] killed  : a reporter's changed bytes do not hold
+  [26/166] killed  : a chain registry that did not answer does not hold
+  [27/166] killed  : a respondent's pending transaction holds the case
+  [28/166] killed  : excluded evidence stays eligible
+  [29/166] SURVIVED: shared-by-nature categories are registered too
+  [30/166] killed  : the panel is convened while a reporter item is unread
+  [31/166] killed  : a logging duty needs only one kind of record
+  [32/166] killed  : the spending limit is not enforced
+  [33/166] killed  : the logging duty is never decided by code
+  [34/166] killed  : the counterparty allowlist is not enforced
+  [35/166] killed  : any wallet's transactions are attributed to the agent
+  [36/166] SURVIVED: logs from any origin satisfy the controller's logging duty
+  [37/166] SURVIVED: spending exactly the limit breaches it
+  [38/166] SURVIVED: an excluded transaction still decides a chain rule
+  [39/166] killed  : stale evidence is not flagged
+  [40/166] SURVIVED: a duplicate is not flagged
+  [41/166] killed  : a sequence gap is not flagged
+  [42/166] killed  : a time reversal is not flagged
+  [43/166] killed  : a transaction the chain never recorded is not flagged
+  [44/166] killed  : a captured attack payload is excluded as hidden text
+  [45/166] killed  : hidden text is not scanned
+  [46/166] SURVIVED: a declared impersonation is not flagged
+  [47/166] killed  : text aimed at the adjudicator is not scanned
+  [48/166] killed  : a credential in evidence is not scanned
+  [49/166] SURVIVED: an impersonation inside a document is not flagged
+  [50/166] killed  : a structured document about another agent is linked
+  [51/166] killed  : a party's own sphere supports its own finding
+  [52/166] killed  : a readjudication may run without what the appealed round read
+  [53/166] killed  : a misconfiguration needs no record of configuration
+  [54/166] killed  : tools and public sources sit outside the controller's sphere
+  [55/166] SURVIVED: a decided finding needs no quote at all
+  [56/166] killed  : an ABSENT that forfeits a bond needs no support
+  [57/166] killed  : manipulated support is not discounted
+  [58/166] killed  : steering found by code is not attributed
+  [59/166] killed  : a discounted finding keeps its state
+  [60/166] killed  : panel-found manipulation is not attributed
+  [61/166] killed  : the gate does not re-ground quotes
+  [62/166] killed  : the gate lets a code finding differ from the plan
+  [63/166] killed  : the consequence is not compared
+  [64/166] SURVIVED: a verified row's size is not bound to its status
+  [65/166] SURVIVED: what was read is not compared on the chain
+  [66/166] killed  : a different expected error ratifies
+  [67/166] SURVIVED: a leader error of the model's making is ratified
+  [68/166] killed  : harm does not raise severity
+  [69/166] SURVIVED: any validator error ratifies a transient leader error
+  [70/166] killed  : an excluded item's text reaches the panel
+  [71/166] killed  : financial impact does not raise severity
+  [72/166] killed  : ongoing exposure does not raise severity
+  [73/166] killed  : a one-sided record is not capped
+  [74/166] killed  : value at the high-value line is not financial impact
+  [75/166] killed  : compliance carries no severity
+  [76/166] killed  : data sensitivity does not weigh a data-class rule
+  [77/166] killed  : containment severity ignores harm
+  [78/166] killed  : a misconfigured compromise keeps a lower controller share
+  [79/166] killed  : a faulty tool carries no share of a compromise
+  [80/166] killed  : a tool share can exceed what the controller left
+  [81/166] killed  : an external failure blames the external party over a faulty tool
+  [82/166] killed  : containment assigns no party
+  [83/166] killed  : a leaked credential needs no rotation

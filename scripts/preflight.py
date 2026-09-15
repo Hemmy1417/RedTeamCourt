@@ -320,6 +320,12 @@ def address_checks():
     allowed = {deployment["contract_address"].lower(), deployment["signer"].lower()}
     wallets = json.loads((FIXTURES / "wallets.json").read_text(encoding="utf-8"))
     allowed |= {a.lower() for a in wallets.values()}
+    # superseded and disposable deployments are named in docs beside their records
+    kept_records = list((ROOT / "deploy" / "superseded").glob("*/*.json")) + \
+        list((ROOT / "deploy" / "diagnostics").glob("*.json"))
+    for kept in kept_records:
+        allowed |= {a.lower() for a in re.findall(r"0x[0-9a-fA-F]{40}(?![0-9a-fA-F])",
+                                                   kept.read_text(encoding="utf-8"))}
     stray = []
     docs = [ROOT / "README.md", ROOT / "SUBMISSION.md", ROOT / "DECISION.md"] + \
         list((ROOT / "docs").glob("*.md"))
@@ -331,7 +337,7 @@ def address_checks():
             if address.lower() not in allowed:
                 stray.append(path.name + ":" + address)
     placeholders = [p.name for p in docs if p.exists()
-                    and re.search(r"LIVE_SUMMARY|TO_BE_FILLED|TODO", p.read_text(encoding="utf-8"))]
+                    and re.search(r"LIVE_SUMMARY|TO_BE_FILLED|TODO|[A-Z0-9]+_PENDING", p.read_text(encoding="utf-8"))]
     check("no unfilled placeholders in the docs", not placeholders, ", ".join(placeholders))
     check("docs name only the recorded addresses (one canonical deployment)",
           not stray, ", ".join(sorted(set(stray))))

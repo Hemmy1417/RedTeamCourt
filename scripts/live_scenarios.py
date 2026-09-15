@@ -10,6 +10,10 @@ and the report bonds.
 
 Phases:
 
+  B  the adversarial suite: the policy owner registers every on-chain case in
+     fixtures/cases.json and a stranger runs each one through the engine. It
+     runs first: several cases carry Harbor's report, which phase A settles,
+     and a settled record offered again is - correctly - a replay.
   A  the incident arc with real money. Meridian Labs registers its policy and
      Ledgerline, posts a security bond and funds a bounty pool; Ledgerline's
      wallet makes the payment the forged invoice asked for; Harbor Supplies
@@ -18,9 +22,7 @@ Phases:
      with the chain record of the payment, the readjudication confirms the
      finding, the incident finalizes, compensation moves from the bond to
      Harbor, and Harbor's wallet balance rises by exactly what it withdraws.
-  B  the adversarial suite: the policy owner registers every on-chain case in
-     fixtures/cases.json and a stranger runs each one through the engine,
-     including the replay of phase A's settled evidence.
+     Then RC05 offers phase A's settled evidence again through the engine.
   C  the other outcomes and the refusals: Northwind's disclosure paid from the
      bounty pool, a remediation claim without test results, a remediation
      verified by Northwind's retest, Quayside's false report forfeiting its
@@ -443,8 +445,8 @@ def phase_a(ac: dict, raw: str):
     phase = T.setdefault("A", {})
     harbor, controller, docfetch = ac["harbor"], ac["controller"], ac["docfetch"]
     outsider = ac["stranger"]
-    drain = ac["agent_wallet"].transfer("A:drain", WALLETS["attacker"],
-                                        SUPPORT.WORLD["transactions"]["DRAIN"]["value_atto"])
+    drain = T.get("chain_names", {}).get("DRAIN") or ac["agent_wallet"].transfer(
+        "A:drain", WALLETS["attacker"], SUPPORT.WORLD["transactions"]["DRAIN"]["value_atto"])
     phase["drain_tx"] = drain
 
     # Harbor alleges the two payment rules: the chain record its appeal brings is
@@ -473,7 +475,7 @@ def phase_a(ac: dict, raw: str):
                                                                    "FINALIZED"),
           "both respondents answered but the incident is not RESPONDED")
 
-    outsider.write("A:adjudicate", "request_adjudication", [incident_id])
+    harbor.write("A:adjudicate", "request_adjudication", [incident_id])
     rounds = [str(r) for r in harbor.read("get_incident", [incident_id])["adjudication_ids"]]
     first = harbor.read("get_adjudication", [rounds[0]])
     # only the reporter's own two items: no finding against the controller can
@@ -542,12 +544,13 @@ def epoch_after(iso: str, seconds: int) -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(epoch(iso) + seconds))
 
 
-def phase_b(ac: dict, raw: str):
-    log("\nPHASE B - the adversarial suite through the on-chain engine")
+def phase_b(ac: dict, raw: str, replay: bool = False):
+    log("\nPHASE B - " + ("the replay of phase A's settled evidence" if replay
+                          else "the adversarial suite through the on-chain engine"))
     phase = T.setdefault("B", {"cases": {}})
     controller, outsider = ac["controller"], ac["stranger"]
     chain_names = T.setdefault("chain_names", {})
-    if "DRAIN" not in chain_names:
+    if "DRAIN" not in chain_names and T.get("A", {}).get("drain_tx"):
         chain_names["DRAIN"] = T["A"]["drain_tx"]
     for name, spec in SUPPORT.WORLD["transactions"].items():
         if name not in chain_names:
@@ -555,7 +558,7 @@ def phase_b(ac: dict, raw: str):
                                                           spec["value_atto"])
     save()
     order = [c for c in SUPPORT.CATALOGUE["cases"] if c["engine"]
-             and (c["onchain"] or c["case_id"] == "RC05")]
+             and (c["case_id"] == "RC05" if replay else c["onchain"])]
     for entry in order:
         case_id = entry["case_id"]
         if case_id in phase["cases"]:
@@ -612,7 +615,7 @@ def phase_c(ac: dict, raw: str):
         submit(actor, f"C:disclosure_evidence:{i}", disclosure, it, raw)
     controller.write("C:disclosure_respond", "submit_counterreport", [
         disclosure, "Meridian Labs confirms the sandbox session and is patching."])
-    outsider.write("C:disclosure_adjudicate", "request_adjudication", [disclosure])
+    northwind.write("C:disclosure_adjudicate", "request_adjudication", [disclosure])
     disclosed = northwind.read("get_latest_adjudication", [disclosure])
     expect(phase, "disclosure", disclosed, "CONFIRMED_VULNERABILITY", severity=(3, 4))
 
@@ -628,7 +631,7 @@ def phase_c(ac: dict, raw: str):
         submit(quayside, f"C:false_evidence:{i}", false_id, it, raw, other)
     controller.write("C:false_respond", "submit_counterreport", [
         false_id, "That transfer did not come from Ledgerline's wallet."])
-    outsider.write("C:false_adjudicate", "request_adjudication", [false_id])
+    quayside.write("C:false_adjudicate", "request_adjudication", [false_id])
     falsely = quayside.read("get_latest_adjudication", [false_id])
     expect(phase, "false_report", falsely, "FALSE_POSITIVE")
     check(falsely["chain"][0]["sender"] != ac["agent_wallet"].wallet,
@@ -792,10 +795,12 @@ def main():
     ac = actors(args.address)
     setup(ac, raw)
     only = args.only.split(",")
-    if "A" in only:
-        phase_a(ac, raw)
     if "B" in only:
         phase_b(ac, raw)
+    if "A" in only:
+        phase_a(ac, raw)
+    if "A" in only and "B" in only:
+        phase_b(ac, raw, replay=True)
     if "C" in only:
         phase_c(ac, raw)
     cases = T.get("B", {}).get("cases", {})
