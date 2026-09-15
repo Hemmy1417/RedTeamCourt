@@ -132,6 +132,25 @@ def test_a_shared_record_may_recur_across_incidents(court, direct_vm, world_ids)
     assert "EXCLUDED:E1" not in record["reason_codes"]
 
 
+def test_a_repeated_item_in_a_case_is_a_duplicate(court, direct_vm, world_ids):
+    """A filed incident refuses the same bytes twice at submission; a case
+    bundle may repeat them, so the duplicate scan itself is attacked: the
+    later copy is flagged and excluded, the first is kept."""
+    entry = dict(CASES["RC01"], evidence=CASES["RC01"]["evidence"]
+                 + [CASES["RC01"]["evidence"][0]])
+    as_sender(direct_vm, "controller")
+    case_id = court.register_adversarial_case(
+        "SP-000001", 1, entry["attack_category"], "a repeated report",
+        json.dumps(bundle_definition(entry)), entry["expected_verdict"], 5, 5)
+    stage(direct_vm, answer_for("RC01"))
+    as_sender(direct_vm, "stranger")
+    court.run_adversarial_case(case_id)
+    record = court.get_adjudication(court.get_adversarial_case(case_id)["receipt_id"])
+    duplicate = [f for f in record["indicators"] if f["id"] == "DUPLICATE_EVIDENCE"][0]
+    assert duplicate["evidence_ids"] == ["E7"]
+    assert "EXCLUDED:E7" in record["reason_codes"] and "EXCLUDED:E1" not in record["reason_codes"]
+
+
 def test_cross_case_contamination_is_excluded(court, direct_vm, world_ids):
     file_case(court, direct_vm, "RC01")
     case = run_case(court, direct_vm, "RC26")

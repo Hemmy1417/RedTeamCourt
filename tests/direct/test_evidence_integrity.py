@@ -390,6 +390,72 @@ def test_chain_states(court, direct_vm, world_ids, state, expected_fact, verdict
         assert finding(record, "R4")["state"] == "UNVERIFIABLE"
 
 
+def test_spending_exactly_the_limit_does_not_breach_it(court, direct_vm, world_ids):
+    """R4 forbids a payment that EXCEEDS 0.01 GEN; one of exactly 0.01 GEN is
+    within it. The counterparty rule still fails on the attacker's wallet."""
+    incident_id = file_case(court, direct_vm, "RC01")
+    warp(direct_vm, later(86400 + 1))
+    chain = default_chain()
+    chain[tx_hash("DRAIN")] = dict(studionet_tx("DRAIN"), value=10 * 10 ** 15)
+    record = adjudicate(court, direct_vm, incident_id, answer_for("RC01"), chain=chain)
+    r4 = finding(record, "R4")
+    assert r4["state"] == "NOT_VIOLATED" and r4["by"] == "CODE" and r4["evidence_ids"] == ["E6"]
+    assert finding(record, "R5")["state"] == "VIOLATED"
+
+
+def test_an_excluded_transaction_decides_no_chain_rule(court, direct_vm, world_ids):
+    """The payment is already committed to another open incident, so here it is
+    reuse and excluded - and a transaction nothing may rest on cannot break
+    the spending limit either."""
+    file_case(court, direct_vm, "RC01")
+    second = open_incident(court, direct_vm)
+    commit(court, direct_vm, second, [CASES["RC01"]["evidence"][1], CASES["RC01"]["evidence"][5]])
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, second, {"rules": {}, "indicators": {}})
+    assert indicator(record, "CROSS_CASE_REUSE")["evidence_ids"] == ["E2"]
+    assert [finding(record, r)["state"] for r in ("R4", "R5")] == ["UNVERIFIABLE", "UNVERIFIABLE"]
+
+
+def test_a_declared_issuer_naming_another_party_is_an_impersonation(court, direct_vm,
+                                                                    world_ids):
+    """A plain-text report on Harbor's host, declared to be issued by Meridian
+    Labs: nothing inside the text says so, but the declared issuer names a
+    party whose origin did not serve it."""
+    incident_id = file_case(court, direct_vm, "RC01")
+    commit(court, direct_vm, incident_id, [item(
+        "USER_REPORT", "sources/harbor/complaint-spend-summary.txt",
+        issuer="Meridian Labs security desk")])
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, incident_id, answer_for("RC01"))
+    assert indicator(record, "SOURCE_IDENTITY_MISMATCH")["evidence_ids"] == ["E7"]
+
+
+def test_an_issuer_inside_a_document_naming_another_party_is_an_impersonation(court, direct_vm,
+                                                                              world_ids):
+    """The mirror: declared honestly as Harbor's, but the trace itself says it
+    was issued by Meridian Labs' runtime - from Harbor's host."""
+    incident_id = file_case(court, direct_vm, "RC01")
+    commit(court, direct_vm, incident_id, [item(
+        "AGENT_TRACE", "sources/harbor/fabricated-trace-ses-4471.json",
+        issuer="Harbor Supplies")])
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, incident_id, answer_for("RC01"))
+    assert indicator(record, "SOURCE_IDENTITY_MISMATCH")["evidence_ids"] == ["E7"]
+
+
+def test_the_logging_duty_needs_the_controllers_own_records(court, direct_vm, world_ids):
+    """R6 requires Meridian to keep an agent trace and a tool-call log. Docfetch's
+    request log is a tool-call log, but it is Docfetch's record, not Meridian's:
+    the duty is breached on the record's face."""
+    incident_id = open_incident(court, direct_vm, alleged_rules=["R6"])
+    commit(court, direct_vm, incident_id, [CASES["RC01"]["evidence"][0], M_TRACE,
+                                           CASES["RC01"]["evidence"][4]])
+    warp(direct_vm, later(86400 + 1))
+    record = adjudicate(court, direct_vm, incident_id, {"rules": {}, "indicators": {}})
+    r6 = finding(record, "R6")
+    assert r6["state"] == "VIOLATED" and r6["by"] == "CODE"
+
+
 def test_a_respondents_pending_transaction_is_excluded_not_held(court, direct_vm, world_ids):
     incident_id = file_case(court, direct_vm, "RC01")
     as_sender(direct_vm, "controller")
