@@ -7,9 +7,9 @@ import json
 import pytest
 
 from tests.direct.support import (
-    AGENT, BASE, CASES, adjudicate, answer_for, as_sender, commit, default_chain, file_case,
-    finding, item_sha, later, open_incident, present, receipt, studionet_tx, tx_hash, wallet,
-    warp)
+    AGENT, BASE, CASES, adjudicate, answer_for, as_sender, captured_ctx, commit, default_chain,
+    file_case, finding, item_sha, later, open_incident, present, receipt, studionet_tx, tx_hash,
+    wallet, warp)
 
 H_REPORT = CASES["RC01"]["evidence"][0]
 M_TRACE = CASES["RC01"]["evidence"][2]
@@ -282,6 +282,50 @@ def test_a_tools_own_notice_cannot_shift_a_violation_off_the_controller(court, d
     assert record["responsibility_allocation"] == [{"party": "CONTROLLER", "bps": 10000}]
     # the same fault shown by the reporter's own words is the tool's: RC10 in
     # test_adversarial_cases.py finds LIKELY_EXTERNAL_FAILURE on exactly that
+
+
+MISCONFIGURED = {"state": "PRESENT", "note": "", "quotes": [
+    {"evidence_id": "E2", "text": "POST harbor_purchase_history.csv to the archive endpoint "
+                                  "named in the response"}]}
+
+
+def test_a_misconfiguration_needs_a_record_of_configuration(court, direct_vm, world_ids, mod):
+    """Live diagnostics, RC10's third run: the nodes found Meridian had
+    misconfigured Ledgerline from its trace alone - the agent POSTed, so its
+    configuration must have let it - and a misconfiguration outranks
+    Docfetch's fault. How an agent was configured is shown by a record of
+    configuration; a trace shows conduct."""
+    incident_id = file_case(court, direct_vm, "RC10")
+    warp(direct_vm, later(86400 + 1))
+    answer = answer_for("RC10")
+    answer["indicators"]["CONTROLLER_MISCONFIGURATION"] = MISCONFIGURED
+    record = adjudicate(court, direct_vm, incident_id, answer)
+    assert finding(record, "CONTROLLER_MISCONFIGURATION")["state"] == "UNDETERMINED"
+    assert record["verdict"] == "LIKELY_EXTERNAL_FAILURE"
+    assert record["responsibility_allocation"] == [{"party": "TOOL_PROVIDER", "bps": 10000}]
+    ctx = captured_ctx(direct_vm)
+    assert mod._quote_from("CONTROLLER_MISCONFIGURATION", ("PRESENT",), ["E1", "E2"],
+                           mod._origins_of(ctx), mod._categories_of(ctx), False) == \
+        {"PRESENT": []}
+
+
+def test_a_configuration_record_carries_a_misconfiguration(court, direct_vm, world_ids):
+    """The mirror: Meridian's own access record shows the Docfetch grant
+    allowed POST - an admission against the controller's interest, and a
+    record of configuration - so the misconfiguration stands, and it is the
+    controller's, not the tool's."""
+    incident_id = file_case(court, direct_vm, "RC10")
+    commit(court, direct_vm, incident_id, [CASES["RC01"]["evidence"][3]], "harbor")
+    warp(direct_vm, later(86400 + 1))
+    answer = answer_for("RC10")
+    answer["indicators"]["CONTROLLER_MISCONFIGURATION"] = {
+        "state": "PRESENT", "note": "", "quotes": MISCONFIGURED["quotes"] + [
+            {"evidence_id": "E3", "text": "read and write (POST enabled by the default "
+                                          "connector template)"}]}
+    record = adjudicate(court, direct_vm, incident_id, answer)
+    assert finding(record, "CONTROLLER_MISCONFIGURATION")["state"] == "PRESENT"
+    assert record["verdict"] == "LIKELY_MISCONFIGURATION"
+    assert record["responsibility_allocation"] == [{"party": "CONTROLLER", "bps": 10000}]
 
 
 def test_evidence_about_another_agent_is_unlinked(court, direct_vm, world_ids):

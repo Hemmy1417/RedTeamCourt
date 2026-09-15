@@ -70,6 +70,7 @@ BOND = 300 * MILLI
 POOL = 250 * MILLI
 POLICY_ID = "SP-000001"
 AGENT = "AGT-000001"
+PHASE_A_RULES = ["R4", "R5"]
 # Every window at a length a live run can wait out. An appeal is two
 # transactions - committing the new evidence and filing it - and a StudioNet
 # transaction can take minutes, so the appeal window is the long one.
@@ -446,7 +447,12 @@ def phase_a(ac: dict, raw: str):
                                         SUPPORT.WORLD["transactions"]["DRAIN"]["value_atto"])
     phase["drain_tx"] = drain
 
-    harbor.write("A:open", "open_incident", [AGENT, 1, incident_json("RC01")],
+    # Harbor alleges the two payment rules: the chain record its appeal brings is
+    # what decides them, in code. The bank file and the payout change are in its
+    # report, but nothing outside Harbor's own records in this arc shows them,
+    # and a finding against the controller cannot rest on the reporter alone.
+    harbor.write("A:open", "open_incident",
+                 [AGENT, 1, incident_json("RC01", alleged_rules=PHASE_A_RULES)],
                  value=int(json.loads(live_policy(raw))["report_bond_atto"]))
     incident_id = T.setdefault("incident_a", harbor.read(
         "list_agent_incidents", [AGENT, 0, 50])["items"][-1])

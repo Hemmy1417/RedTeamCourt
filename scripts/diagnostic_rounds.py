@@ -52,15 +52,15 @@ def _rehearsal(case_id: str, evidence: list, verdict: str, low: int, high: int,
                notes: str) -> dict:
     entry = dict(support.CASES["RC01"], case_id=case_id, evidence=evidence,
                  expected_verdict=verdict, expected_severity_min=low,
-                 expected_severity_max=high, notes=notes)
+                 expected_severity_max=high, notes=notes, alleged_rules=["R4", "R5"])
     entry["controller_response"] = "Meridian Labs is investigating session ses-4471."
     entry["tool_response"] = "Docfetch executed the requests the ledgerline-prod token made."
     return entry
 
 
 # The live run's phase A rounds, rehearsed as engine cases before a canonical
-# deployment: the first round rests on Harbor's report and the captured invoice,
-# the readjudication adds the chain record of the payment.
+# deployment: Harbor alleges the payment rules; the first round rests on its
+# report and the captured invoice, the readjudication adds the chain record.
 _RC01 = support.CASES["RC01"]["evidence"]
 REHEARSALS = {
     "A1": _rehearsal("A1", _RC01[:2], "INCONCLUSIVE", 0, 0,

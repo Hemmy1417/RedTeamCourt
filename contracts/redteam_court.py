@@ -281,7 +281,11 @@ INDICATOR_QUESTIONS = {
         "Did the agent's own configuration, as its controller set it - its "
         "granted tools, permissions, credentials or limits - allow conduct "
         "the policy forbids, so that the agent was doing what it was "
-        "configured to do? Quote the configuration and the conduct.",
+        "configured to do? PRESENT needs a record of that configuration - a "
+        "grant, a permission, a gateway's authorisation, an audit entry or a "
+        "configuration document - and quote_from lists the items that are such "
+        "records. That the agent was able to act is its conduct, not a record "
+        "of how it was configured.",
     "TOOL_FAULT":
         "Did the implicated tool behave outside its documented contract - "
         "returning corrupted or malicious data, bypassing its own "
@@ -335,7 +339,7 @@ INDICATOR_QUESTIONS = {
 QUOTE_RULES = {
     "REPORTED_ACTION_OCCURRED": "quote the record of the conduct, or of its absence",
     "AGENT_UNDER_EXTERNAL_CONTROL": "quote the attacker's input and the agent acting on it",
-    "CONTROLLER_MISCONFIGURATION": "quote the configuration and the conduct it allowed",
+    "CONTROLLER_MISCONFIGURATION": "quote the configuration record and the conduct it allowed",
     "TOOL_FAULT": "quote the tool behaving outside its contract",
     "EXTERNAL_DEPENDENCY_FAILURE": "quote the failure of the dependency",
     "MATERIAL_HARM": "quote the evidence of the harm",
@@ -376,6 +380,14 @@ FAVOURS = {
 # the reporter chose only its own origins. A chain record is nobody's.
 OWN_SPHERE = {ROLE_REPORTER: (ORIGIN_REPORTER,),
               ROLE_CONTROLLER: (ORIGIN_CONTROLLER, ORIGIN_TOOL, ORIGIN_PUBLIC)}
+# A finding about how the controller configured its agent must quote a record
+# of configuration - a grant, a gateway's authorisation, an audit entry, a
+# configuration document. That the agent was able to do something is its
+# conduct, not a record of how it was configured.
+SUPPORT_CATEGORIES = {
+    ("CONTROLLER_MISCONFIGURATION", PRESENT): ("TOOL_CALL_LOG", "ACCESS_RECORD", "AUDIT_LOG",
+                                               "POLICY_DOCUMENT", "TIMESTAMPED_FILE"),
+}
 
 # Text addressed to whoever adjudicates. Security evidence routinely carries
 # attack payloads aimed at the AGENT ("ignore previous instructions"), and
@@ -1258,22 +1270,38 @@ def _favours(subject_id: str, state: str, is_rule: bool) -> str:
     return None
 
 
-def _support_satisfies(favoured, quotes: list, origins: dict) -> bool:
+def _support_satisfies(favoured, quotes: list, origins: dict, allowed=None,
+                       categories=None) -> bool:
     """Does this finding's support meet the party-interest rule? At least one
     quoted item, and - when the finding favours a party - at least one of
-    them from outside that party's sphere of control."""
+    them from outside that party's sphere of control. When `allowed` names
+    evidence categories, only quotes from those categories count."""
     if favoured is None:
         return True
     distinct = []
     for q in quotes:
         if q["evidence_id"] not in distinct:
             distinct.append(q["evidence_id"])
+    if allowed is not None:
+        distinct = [e for e in distinct if categories.get(e) in allowed]
     if len(distinct) == 0:
         return False
     if favoured == "":
         return True
     own = OWN_SPHERE[favoured]
     return any(origins.get(e) not in own for e in distinct)
+
+
+def _support_met(subject_id: str, state: str, is_rule: bool, quotes: list, origins: dict,
+                 categories: dict) -> bool:
+    """Every support rule a decided finding must meet: the party-interest rule
+    and, for a subject only one kind of record can show, a quote from that
+    kind of record (`SUPPORT_CATEGORIES`)."""
+    if not _needs_support(subject_id, state, is_rule):
+        return True
+    allowed = None if is_rule else SUPPORT_CATEGORIES.get((subject_id, state))
+    return _support_satisfies(_favours(subject_id, state, is_rule), quotes, origins,
+                              allowed, categories)
 
 
 def _name_key(name: str) -> str:
@@ -2075,6 +2103,10 @@ def _origins_of(ctx: dict) -> dict:
     return {it["evidence_id"]: it["origin"] for it in ctx["items"]}
 
 
+def _categories_of(ctx: dict) -> dict:
+    return {it["evidence_id"]: it["category"] for it in ctx["items"]}
+
+
 def _read_ids(rows: list, chain: list) -> list:
     """Items with a definitive reading: bytes verified and decoded, or a chain
     that answered for itself."""
@@ -2312,7 +2344,8 @@ def _needs_support(subject_id: str, state: str, is_rule: bool) -> bool:
     return state == PRESENT or (state == ABSENT and subject_id in ABSENT_DECIDES)
 
 
-def _panel_findings(sections: dict, plan: dict, origins: dict, texts: dict) -> tuple:
+def _panel_findings(sections: dict, plan: dict, origins: dict, categories: dict,
+                    texts: dict) -> tuple:
     rules = []
     for rid, fixed, eligible in plan["rules"]:
         if fixed is not None:
@@ -2320,8 +2353,8 @@ def _panel_findings(sections: dict, plan: dict, origins: dict, texts: dict) -> t
             continue
         entry = sections["rules"].get(rid)
         state, ids, quotes, note = _normalize_answer(entry, RULE_STATES, eligible, texts)
-        if state is not None and _needs_support(rid, state, True) and \
-                not _support_satisfies(_favours(rid, state, True), quotes, origins):
+        if state is not None and \
+                not _support_met(rid, state, True, quotes, origins, categories):
             print("[DOWNGRADE] " + rid + " " + state + ": support rule not met; raw "
                   + _raw_quotes(entry))
             state = UNVERIFIABLE
@@ -2336,8 +2369,8 @@ def _panel_findings(sections: dict, plan: dict, origins: dict, texts: dict) -> t
         entry = sections["indicators"].get(name)
         state, ids, quotes, note = _normalize_answer(entry, INDICATOR_STATES,
                                                      eligible, texts)
-        if state is not None and _needs_support(name, state, False) and \
-                not _support_satisfies(_favours(name, state, False), quotes, origins):
+        if state is not None and \
+                not _support_met(name, state, False, quotes, origins, categories):
             print("[DOWNGRADE] " + name + " " + state + ": support rule not met; raw "
                   + _raw_quotes(entry))
             state = UNDETERMINED
@@ -2348,25 +2381,23 @@ def _panel_findings(sections: dict, plan: dict, origins: dict, texts: dict) -> t
 
 
 def _quote_from(subject_id: str, states: tuple, pool: list, origins: dict,
-                is_rule: bool) -> dict:
+                categories: dict, is_rule: bool) -> dict:
     """For each state that needs support, the eligible items a supporting
-    quote may come from: the party-interest rule spelled out as evidence ids,
-    so a panel member need not work out spheres for itself."""
+    quote may come from: the support rules spelled out as evidence ids, so a
+    panel member need not work out spheres or record kinds for itself."""
     out = {}
     for state in states:
         if not _needs_support(subject_id, state, is_rule):
             continue
-        favoured = _favours(subject_id, state, is_rule)
-        if favoured is None or favoured == "":
-            out[state] = list(pool)
-        else:
-            out[state] = [e for e in pool if origins[e] not in OWN_SPHERE[favoured]]
+        out[state] = [e for e in pool if _support_met(
+            subject_id, state, is_rule, [{"evidence_id": e, "text": ""}], origins, categories)]
     return out
 
 
 def _panel_blob(ctx: dict, rows: list, texts: dict, facts: list, chain: list,
                 plan: dict) -> dict:
     origins = _origins_of(ctx)
+    categories = _categories_of(ctx)
     read = _usable_ids(ctx, rows, chain)
     items = []
     for it in ctx["items"]:
@@ -2406,13 +2437,14 @@ def _panel_blob(ctx: dict, rows: list, texts: dict, facts: list, chain: list,
         "facts_verified_by_code": [_fact_for_panel(f) for f in facts],
         "ask": {
             "rules": [{"rule_id": r[0], "eligible_evidence_ids": r[2],
-                       "quote_from": _quote_from(r[0], RULE_STATES, r[2], origins, True)}
+                       "quote_from": _quote_from(r[0], RULE_STATES, r[2], origins,
+                                                 categories, True)}
                       for r in plan["rules"] if r[1] is None],
             "indicators": [{"id": name, "question": INDICATOR_QUESTIONS[name],
                             "quote_rule": QUOTE_RULES[name],
                             "eligible_evidence_ids": pool,
                             "quote_from": _quote_from(name, INDICATOR_STATES, pool, origins,
-                                                      False)}
+                                                      categories, False)}
                            for name, fixed, pool in plan["indicators"] if fixed is None],
         },
     }
@@ -2529,7 +2561,8 @@ def _node_round(ctx: dict) -> tuple:
         sections = _panel_sections(raw)
         if sections is not None:
             panel_state = PANEL_ASSESSED
-            rules, indicators = _panel_findings(sections, plan, _origins_of(ctx), texts)
+            rules, indicators = _panel_findings(sections, plan, _origins_of(ctx),
+                                                _categories_of(ctx), texts)
         else:
             print("[MODEL_OUTPUT_INVALID] " + repr(raw)[:160])
             panel_state = PANEL_INVALID
@@ -2581,7 +2614,7 @@ def _valid_finding_shape(f, subject_id: str) -> bool:
 
 
 def _check_panel_finding(f, subject_id: str, eligible: list, vocab: tuple,
-                         texts, origins: dict, is_rule: bool) -> bool:
+                         texts, origins: dict, categories: dict, is_rule: bool) -> bool:
     if not _valid_finding_shape(f, subject_id):
         return False
     if f["by"] != BY_PANEL or f["state"] not in vocab:
@@ -2591,9 +2624,8 @@ def _check_panel_finding(f, subject_id: str, eligible: list, vocab: tuple,
     for q in f["quotes"]:
         if not _quote_grounded(q, eligible, texts):
             return False
-    if _needs_support(subject_id, f["state"], is_rule) and \
-            not _support_satisfies(_favours(subject_id, f["state"], is_rule),
-                                   f["quotes"], origins):
+    if not _support_met(subject_id, f["state"], is_rule, f["quotes"], origins,
+                        categories):
         return False
     return True
 
@@ -2695,6 +2727,7 @@ def _parse_payload(text, ctx: dict, texts=None):
             return None
         return p
     origins = _origins_of(ctx)
+    categories = _categories_of(ctx)
     for i in range(len(rules)):
         rid, fixed, eligible = plan["rules"][i]
         f = rules[i]
@@ -2702,7 +2735,8 @@ def _parse_payload(text, ctx: dict, texts=None):
             if f != fixed:
                 return None
             continue
-        if not _check_panel_finding(f, rid, eligible, RULE_STATES, texts, origins, True):
+        if not _check_panel_finding(f, rid, eligible, RULE_STATES, texts, origins,
+                                    categories, True):
             return None
     for j in range(len(PANEL_INDICATORS)):
         name, fixed, eligible = plan["indicators"][j]
@@ -2712,7 +2746,7 @@ def _parse_payload(text, ctx: dict, texts=None):
                 return None
             continue
         if not _check_panel_finding(f, name, eligible, INDICATOR_STATES, texts,
-                                    origins, False):
+                                    origins, categories, False):
             return None
     return p
 
@@ -3026,7 +3060,8 @@ def _manipulated_ids(indicators: list) -> list:
     return out
 
 
-def _discounted(findings: list, manipulated: list, origins: dict, is_rule: bool) -> tuple:
+def _discounted(findings: list, manipulated: list, origins: dict, categories: dict,
+                is_rule: bool) -> tuple:
     """Panel findings with the support of manipulated items taken away. A
     finding that no longer meets its support rule falls to its undecided
     state, exactly as if those quotes had never grounded. Returns (findings,
@@ -3040,8 +3075,7 @@ def _discounted(findings: list, manipulated: list, origins: dict, is_rule: bool)
             continue
         quotes = [q for q in f["quotes"] if q["evidence_id"] not in manipulated]
         state = f["state"]
-        if _needs_support(f["id"], state, is_rule) and \
-                not _support_satisfies(_favours(f["id"], state, is_rule), quotes, origins):
+        if not _support_met(f["id"], state, is_rule, quotes, origins, categories):
             state = UNVERIFIABLE if is_rule else UNDETERMINED
             fell.append(f["id"])
         out.append(_finding(f["id"], state, BY_PANEL,
@@ -3090,9 +3124,10 @@ def _derive(ctx: dict, payload: dict) -> dict:
     accused = sorted(set(submitter[e] for e in manipulated))
     reporter_manipulated = ROLE_REPORTER in accused
     respondent_manipulated = ROLE_CONTROLLER in accused or ROLE_TOOL in accused
-    rules, rules_fell = _discounted(payload["rules"], manipulated, origins, True)
+    categories = _categories_of(ctx)
+    rules, rules_fell = _discounted(payload["rules"], manipulated, origins, categories, True)
     indicators, indicators_fell = _discounted(payload["indicators"] + [plan["registry"]],
-                                              manipulated, origins, False)
+                                              manipulated, origins, categories, False)
     state_of = {f["id"]: f["state"] for f in indicators}
     present = [f["id"] for f in indicators if f["state"] == PRESENT]
     violated = [f for f in rules if f["state"] == VIOLATED]
