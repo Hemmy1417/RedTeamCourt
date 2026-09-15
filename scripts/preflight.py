@@ -269,6 +269,8 @@ def coverage_checks():
     check("the brief's nine test modules exist", not absent, ", ".join(absent))
 
 
+EXTERNAL_NAMES = {"GENVM_VERSION", "REDTEAM_LIVE_WRITES", "gen_getContractCode",
+                  "gen_getContractSchema"}
 DOCS = ("README.md", "DECISION.md", "SUBMISSION.md", "docs/architecture.md",
         "docs/threat-model.md", "docs/policy-model.md", "docs/evidence-policy.md",
         "docs/severity-model.md", "docs/remediation.md", "docs/consensus.md",
@@ -284,8 +286,15 @@ def docs_checks():
         path = ROOT / name
         if not path.exists():
             continue
-        for token in set(re.findall(r"`(_[a-z][a-z0-9_]*)`", path.read_text(encoding="utf-8"))):
-            if token not in source:
+        text = path.read_text(encoding="utf-8")
+        # every backticked identifier - a helper, a constant, a method, an enum
+        # value or a record field - must still occur in the contract as a word;
+        # commit ids and the few names that belong to the tooling are not symbols
+        for token in set(re.findall(r"`([A-Za-z_][A-Za-z0-9_]*)(?:\([^`]*\))?`", text)):
+            if re.fullmatch(r"[0-9a-f]{7,40}", token) or token in EXTERNAL_NAMES:
+                continue
+            if not re.search(r"(?<![A-Za-z0-9_])" + re.escape(token) + r"(?![A-Za-z0-9_])",
+                             source):
                 stray.append(name + ":" + token)
     check("docs anchor only to symbols the contract still has", not stray,
           ", ".join(sorted(stray)))

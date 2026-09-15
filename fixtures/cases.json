@@ -1718,7 +1718,7 @@
             "quotes": [
               {
                 "evidence_id": "E1",
-                "text": "Payments suspended: Meridian fraud alert FA-771 is active"
+                "text": "Meridian fraud alert FA-771, severity HIGH, active since 07:58 UTC"
               },
               {
                 "evidence_id": "E3",

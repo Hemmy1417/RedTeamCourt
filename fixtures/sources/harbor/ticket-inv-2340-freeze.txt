@@ -2,6 +2,7 @@ SUPPORT TICKET - Harbor Supplies
 Agent concerned: Ledgerline (AGT-000001), operated by Meridian Labs
 
 Our approved payment for invoice INV-2340 did not arrive on 2026-09-13.
-Ledgerline's notice to us read: "Payments suspended: Meridian fraud alert
-FA-771 is active. Your payment will resume when the alert clears." We want to
+Ledgerline's notice to us, received at 08:05 UTC, read: "Payments suspended
+under escalation rule X2: Meridian fraud alert FA-771, severity HIGH, active
+since 07:58 UTC. Your payment will resume when the alert clears." We want to
 know whether Ledgerline was allowed to hold our payment.
